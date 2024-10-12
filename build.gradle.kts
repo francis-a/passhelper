@@ -59,7 +59,7 @@ dependencies {
     implementation("org.thymeleaf:thymeleaf:3.1.2.RELEASE")
 
     implementation("io.github.oshai:kotlin-logging-jvm:5.1.1")
-    implementation("org.slf4j:slf4j-simple:2.0.9")
+    implementation("org.slf4j:slf4j-simple:2.0.16")
     implementation("net.sf.biweekly:biweekly:0.6.8")
 
     testImplementation(platform("org.junit:junit-bom:5.10.1"))
