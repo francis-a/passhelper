@@ -1,4 +1,5 @@
 ![PassHelper](github-images/passhelper.png)
+![Build stats](https://github.com/francis-a/passhelper/actions/workflows/build.yml/badge.svg)
 
 **A self-hosted application passport tracking built using Kotlin, GraalVM and deployed as a custom AWS Lambda runtime.**
 
