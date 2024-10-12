@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PassHelper</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" crossorigin="anonymous"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" crossorigin="anonymous"
+          href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css">
+
+    <th:block th:replace="~{fragments/favicon.html}"></th:block>
+</head>
+<body>
+<main>
+    <th:block th:replace="~{fragments/header.html :: header(${ {'Notification Email Address'} })}"></th:block>
+    <div class="container mb-3">
+        <div class="d-flex justify-content-center">
+            <h2>Generating calender</h2>
+        </div>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+            </div>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{fragments/footer.html :: footer}"></th:block>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+<script th:inline="javascript">
+    (() => {
+        window.addEventListener("DOMContentLoaded", () => {
+            const downloadLink = document.createElement("a");
+            downloadLink.href = /*[[${downloadUrl}]]*/ ""
+            downloadLink.download = "reminders.ics";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+
+            setTimeout(function () {
+                if (window.history.length > 1 &&
+                    document.referrer.indexOf(window.location.host) !== -1) {
+                    window.history.back();
+                } else {
+                    window.location = "/index"
+                }
+            }, 5000);
+        });
+    })()
+</script>
+<th:block th:replace="~{fragments/color_mode.html}"></th:block>
+</body>
+</html>

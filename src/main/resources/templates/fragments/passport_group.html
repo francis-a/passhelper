@@ -1,0 +1,95 @@
+<!--/*@thymesVar id="passports" type="java.util.List<io.eyecu.passhelper.models.PassportView>"*/-->
+<!--/*@thymesVar id="passport" type="io.eyecu.passhelper.models.PassportView"*/-->
+<th:block th:fragment="passport(title, passports)">
+    <div class="p-3 mb-3 bg-light-subtle rounded shadow-sm border">
+        <h2 class="mb-0" th:text="${title}">Expiring in</h2>
+        <div class="pt-3 row gx-3 gy-3">
+            <th:block th:each="passport :${passports}">
+                <div class="col col-12 col-lg-6">
+                    <div class="card shadow-sm">
+                        <div class="card-header p-0 overflow-hidden">
+                            <div class="row align-items-center">
+                                <div class="col col-10">
+                                    <div class="hstack">
+                                        <span class="float-start fi" th:classappend="'fi-' + ${#strings.toLowerCase(passport.countryCode)}" style="font-size: 2.5rem;"></span>
+                                        <h4 class="ms-2 mb-0" th:text="${passport.fullName}">Full Name</h4>
+                                    </div>
+                                </div>
+                                <div class="col col-2">
+                                    <a class="float-end p-2" th:href="${'edit/' + passport.id}">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-2">
+                            <div class="row align-items-center">
+                                <div class="col-4 text-start">
+                                    <p class="text-muted">Country</p>
+                                </div>
+                                <div class="col-8 text-end">
+                                    <p class="fw-bold" th:text="${passport.countryName}">Canada</p>
+                                </div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-4 text-start">
+                                    <p class="text-muted">Date of Birth</p>
+                                </div>
+                                <div class="col-8 text-end">
+                                    <p th:text="${#temporals.format(passport.dob, 'MMMM dd, yyyy')}">1/2/3</p>
+                                </div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-4 text-start">
+                                    <p class="text-muted">Number</p>
+                                </div>
+                                <div class="col-8 text-end">
+                                    <p class="mb-0" th:text="${passport.number}">1234</p>
+                                </div>
+                            </div>
+                            <div class="border-bottom mt-1 mb-1"></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="vstack">
+                                        <p class="text-muted mb-0 text-center">Issued</p>
+                                        <p class="badge bg-secondary m-0" th:text="${#temporals.format(passport.issuedDate, 'MMMM dd, yyyy')}">
+                                            1/23/45</p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="vstack">
+                                        <p class="text-muted mb-0 text-center">Expires</p>
+                                        <th:block th:switch="${passport.expiring}">
+                                            <p th:case="'HALF_YEAR'" class="badge bg-danger m-0">
+                                            <p th:case="'YEAR'" class="badge bg-warning m-0">
+                                            <p th:case="'OVER_YEAR'" class="badge bg-success m-0">
+                                        </th:block>
+                                        <span th:text="${#temporals.format(passport.expiresDate, 'MMMM dd, yyyy')}"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-6 text-muted small">
+                                    <p class="m-0">Notification Date</p>
+                                </div>
+                                <div class="col-6 text-muted small">
+                                    <div class="hstack float-end">
+                                        <span th:if="${passport.notificationDate != null}"
+                                              th:text="${#temporals.format(passport.notificationDate, 'MMMM dd, yyyy')}"></span>
+                                        <span class="fw-bolder" th:if="${passport.notificationDate == null}">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+    <script>
+
+    </script>
+</th:block>

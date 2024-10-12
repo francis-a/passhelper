@@ -1,0 +1,67 @@
+<!--/*@thymesVar id="passportsInYearView" type="java.util.List<eyecu.passhelper.models.PassportsInYearView>"*/-->
+<!--/*@thymesVar id="year" type="io.eyecu.passhelper.models.PassportsInYearView"*/-->
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PassHelper</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" crossorigin="anonymous"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" crossorigin="anonymous"
+          href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css">
+
+    <th:block th:replace="~{fragments/favicon.html}"></th:block>
+
+</head>
+<body>
+<main>
+    <th:block th:replace="~{fragments/header.html :: header(${ {'Overview'} })}"></th:block>
+    <div class="container">
+        <!--empty view-->
+        <!--/*@thymesVar id="passportCount" type="java.lang.Integer"*/-->
+        <th:block th:if="${passportCount == 0}">
+            <div class="p-3 mb-3 bg-light-subtle rounded shadow-sm border">
+                <h2><i class="bi bi-passport me-2"></i>Welcome to PassHelper</h2>
+                <p>PassHelper keeps your family passports organized and automatically notifies you when it's time to start the renewal process. Get started by adding your first passport!</p>
+                <a href="/add" class="btn-primary btn" role="button">
+                    <i class="bi bi-passport-fill"></i> Add Passport
+                </a>
+            </div>
+        </th:block>
+
+        <!--/*@thymesVar id="notificationEndpointCount" type="java.lang.Integer"*/-->
+        <th:block th:if="${notificationEndpointCount == 0}">
+            <div class="p-3 mb-3 bg-light-subtle rounded shadow-sm border">
+                <h2><i class="bi bi-envelope-at-fill me-2"></i>Passport Renewal Reminder Emails</h2>
+                <p>PassHelper will automatically email you when it's time to start the passport renewal process. Add the email address where you'd like to receive these notifications.</p>
+                <a href="/notification-endpoints" class="btn-success btn" role="button">
+                    <i class="bi bi-envelope-at-fill"></i> Add Email
+                </a>
+            </div>
+        </th:block>
+
+        <!-- Notification endpoints -->
+        <!--/*@thymesVar id="notificationEndpoints" type="java.lang.String"*/-->
+        <th:block th:if="${notificationEndpointCount != 0}">
+            <div class="p-3 mb-3 bg-light-subtle rounded shadow-sm border">
+                Reminder notifications will be emailed to: <span th:text="${notificationEndpoints}"></span>
+            </div>
+        </th:block>
+
+        <th:block th:each="year : ${passportsInYearView}">
+            <th:block th:replace="~{fragments/passport_group.html :: passport('Expiring in ' + ${year.expirationYear}, ${year.passports})}"></th:block>
+        </th:block>
+    </div>
+</main>
+<th:block th:replace="~{fragments/footer.html :: footer}"></th:block>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+<th:block th:replace="~{fragments/color_mode.html}"></th:block>
+</body>
+</html>

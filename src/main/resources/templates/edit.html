@@ -1,0 +1,111 @@
+<!--/*@thymesVar id="editPassportForm" type="io.eyecu.passhelper.models.EditPassportForm"*/-->
+<!--/*@thymesVar id="passportView" type="io.eyecu.passhelper.models.PassportView"*/-->
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PassHelper</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" crossorigin="anonymous"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" crossorigin="anonymous"
+          href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css">
+
+    <th:block th:replace="~{fragments/favicon.html}"></th:block>
+
+</head>
+<body>
+<main>
+    <th:block
+            th:replace="~{fragments/header.html :: header(${ { passportView.fullName, passportView.countryName } })}"></th:block>
+    <div class="container mb-3">
+        <div class="card shadow-sm">
+            <div class="card-header p-0 overflow-hidden">
+                <div class="row align-items-center">
+                    <div class="col col-10">
+                        <div class="hstack">
+
+                            <span class="float-start fi"
+                                  th:classappend="'fi-' + ${#strings.toLowerCase(passportView.countryCode)}"
+                                  style="font-size: 2.5rem;"></span>
+                            <h3 class="ms-2 mb-0">Modify Passport</h3>
+                        </div>
+                    </div>
+                    <div class="col col-2">
+                        <a href="#" onclick="deletePassport()" class="float-end pe-3 text-danger text-decoration-none">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body bg-light-subtle">
+                <form method="post" th:action="${passportView.id}" enctype="application/x-www-form-urlencoded"
+                      th:object="${editPassportForm}">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName"
+                                   th:value="*{firstName}" th:required="required" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName"
+                                   th:value="*{lastName}" th:required="required" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="number" class="form-label">Passport Number</label>
+                        <input type="text" class="form-control" id="number" name="number"
+                               th:value="*{number}" th:required="required" required>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label for="issuedDate" class="form-label">Issued Date</label>
+                            <input type="date" class="form-control" id="issuedDate" name="issuedDate"
+                                   th:value="*{issuedDate}" th:required="required"
+                                   required>
+                        </div>
+                        <div class="col-6">
+                            <label for="expiresDate" class="form-label">Expires Date</label>
+                            <input type="date" class="form-control" id="expiresDate" name="expiresDate"
+                                   th:value="*{expiresDate}" th:required="required"
+                                   required>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button class="btn btn-primary" type="submit">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{fragments/footer.html :: footer}"></th:block>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+<script th:inline="javascript">
+
+    function deletePassport() {
+        let result = window.confirm("Are you sure you want to delete this passport?")
+        if (result) {
+            let request = new XMLHttpRequest()
+            request.open("DELETE", window.location)
+            request.onreadystatechange = () => {
+                if (request.readyState === 4) {
+                    document.location = "/index"
+                }
+            }
+            request.send()
+        }
+    }
+
+</script>
+<th:block th:replace="~{fragments/color_mode.html}"></th:block>
+</body>
+</html>

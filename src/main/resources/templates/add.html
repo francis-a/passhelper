@@ -1,0 +1,118 @@
+<!--/*@thymesVar id="createPassportForm" type="io.eyecu.passhelper.models.CreatePassportForm"*/-->
+<!--/*@thymesVar id="countries" type="java.util.List<io.eyecu.passhelper.models.Country>"*/-->
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PassHelper</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" crossorigin="anonymous"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" crossorigin="anonymous"
+          href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css">
+
+    <th:block th:replace="~{fragments/favicon.html}"></th:block>
+
+</head>
+<body>
+<main>
+    <th:block th:replace="~{fragments/header.html :: header(${ {'Add Passport'} })}"></th:block>
+    <div class="container mb-3">
+        <div class="shadow-sm p-3 bg-light-subtle rounded border">
+            <form method="post" th:action="@{add}" enctype="application/x-www-form-urlencoded"
+                  th:object="${createPassportForm}">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName" name="firstName"
+                               th:value="*{firstName}" th:required="required" required>
+                    </div>
+                    <div class="col-6">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" name="lastName"
+                               th:value="*{lastName}" th:required="required" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="dob" class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" id="dob" name="dob" th:value="*{dob}"
+                           th:required="required" required>
+                </div>
+                <div class="mb-3">
+                    <label for="number" class="form-label">Passport Number</label>
+                    <input type="text" class="form-control" id="number" name="number"
+                           th:value="*{number}" th:required="required" required>
+                </div>
+                <div class="mb-3">
+                    <label for="issuingCountry" class="form-label">Issuing Country</label>
+                    <div class="input-group">
+                                <span class="input-group-text overflow-hidden p-0 m-0">
+                                    <span id="selectedCountryInputFlag" class="fi fi-xx"
+                                          style="font-size: 2.5rem;"></span>
+                                </span>
+
+                        <input class="form-control" id="issuingCountry" name="issuingCountry" list="countryList"
+                               oninput="issueCountryChanged()"
+                               th:value="*{issuingCountry}" th:required="required"
+                               required>
+                        <datalist id="countryList">
+                            <option th:each="country : ${countries}" th:text="${country.name}"></option>
+                        </datalist>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label for="issuedDate" class="form-label">Issued Date</label>
+                        <input type="date" class="form-control" id="issuedDate" name="issuedDate"
+                               th:value="*{issuedDate}" th:required="required"
+                               required>
+                    </div>
+                    <div class="col-6">
+                        <label for="expiresDate" class="form-label">Expires Date</label>
+                        <input type="date" class="form-control" id="expiresDate" name="expiresDate"
+                               th:value="*{expiresDate}" th:required="required"
+                               required>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <button class="btn btn-primary" type="submit">Add Passport</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{fragments/footer.html :: footer}"></th:block>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+<script th:inline="javascript">
+    function issueCountryChanged() {
+        let inputCountry = document.getElementById('issuingCountry').value
+        let inputFlag = document.getElementById('selectedCountryInputFlag')
+
+        let classesToRemove = Array.from(inputFlag.classList).filter(className => className.startsWith("fi-"));
+        classesToRemove.forEach(className => {
+            inputFlag.classList.remove(className);
+        })
+
+        let countryList = /*[[${countries}]]*/ ""
+
+        let countryData = countryList.find((country) =>
+            country.name.localeCompare(inputCountry, undefined, {sensitivity: 'base'}) === 0
+        )
+
+        if (!countryData) {
+            inputFlag.classList.add("fi-xx")
+        } else {
+            inputFlag.classList.add("fi-" + countryData.code.toLowerCase())
+        }
+    }
+</script>
+
+<th:block th:replace="~{fragments/color_mode.html}"></th:block>
+</body>
+</html>

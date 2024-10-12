@@ -1,0 +1,64 @@
+<th:block th:fragment="header(path)">
+    <div class="container">
+        <header class="row align-items-center mt-3 mb-3">
+            <div class="col col-10">
+                <a href="/index" class="link-body-emphasis text-decoration-none">
+                    <h1 class="p-0 m-0"><i class="bi bi-passport me-2"></i>PassHelper</h1>
+                </a>
+            </div>
+            <div class="col col-2">
+                <div class="hstack float-end">
+                    <button class="btn btn-sm m-0 btn-secondary me-2" title="About" role="button" data-bs-toggle="modal"
+                            data-bs-target="#aboutModal">
+                        <i class="bi bi-patch-question-fill"></i>
+                    </button>
+                    <a href="/calender" class="btn btn-sm btn-secondary me-2" title="Download calender" role="button">
+                        <i class="bi bi-calendar-plus-fill"></i>
+                    </a>
+                    <a href="/notification-endpoints" class="btn btn-sm btn-success me-2"
+                       title="Add reminder email address"
+                       role="button">
+                        <i class="bi bi-envelope-at-fill"></i>
+                    </a>
+                    <a href="/add" class="btn btn-sm btn-primary" title="Add passport" role="button">
+                        <i class="bi bi-passport-fill"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+        <ol class="breadcrumb mb-3 p-3 bg-body-tertiary rounded-3">
+            <li class="breadcrumb-item">
+                <a class="link-body-emphasis" href="/index">
+                    <i class="bi bi-passport-fill"></i>
+                    <span class="visually-hidden">Overview</span>
+                </a>
+            </li>
+            <th:block th:each="page, stats : ${path}">
+                <li th:unless="${stats.last}" class="breadcrumb-item" th:text="${page}">
+                <li th:if="${stats.last}" class="breadcrumb-item active" aria-current="page" th:text="${page}">
+                </li>
+            </th:block>
+        </ol>
+    </div>
+
+    <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p>
+                        PassHelper ensures you never miss a passport renewal for your family.
+                        You'll receive an automated email reminder six months before any passport expires.
+                    </p>
+                    <p>
+                        Additionally, you can download a calendar file that includes each passport's
+                        expiration date along with a reminder event set six months in advance.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
