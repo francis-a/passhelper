@@ -68,7 +68,7 @@ dependencies {
     testImplementation(platform("org.testcontainers:testcontainers-bom:1.19.3"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:localstack")
-    testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation("org.assertj:assertj-core:3.26.3")
 
     implementation(platform("org.mockito:mockito-bom:5.8.0"))
     testImplementation("org.mockito:mockito-junit-jupiter")
