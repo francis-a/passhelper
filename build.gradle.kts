@@ -70,7 +70,7 @@ dependencies {
     testImplementation("org.testcontainers:localstack")
     testImplementation("org.assertj:assertj-core:3.24.2")
 
-    implementation(platform("org.mockito:mockito-bom:5.8.0"))
+    implementation(platform("org.mockito:mockito-bom:5.14.1"))
     testImplementation("org.mockito:mockito-junit-jupiter")
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
