@@ -129,7 +129,7 @@ class CalenderServiceTest {
     @Test
     fun `should set unique event id`() {
         val passports = listOf(
-            createPassportView(id = "1", firstName = "John", lastName = "Doe")
+            createPassportView(id = "1", firstName = "John", lastName = "Doe", expiresDate = LocalDate.of(2024, 1, 1))
         )
         whenever(passportService.findAll()).thenReturn(passports)
 
@@ -148,8 +148,8 @@ class CalenderServiceTest {
             val ical = Biweekly.parse(calendarContent).first()
             val events = ical.events
 
-            assertTrue(events.any { it.uid.value == "Sm9obiBEb2UtMjAyNS0wNC0xMi0yMDI1LTA0LTEyLVVT" })
-            assertTrue(events.any { it.uid.value == "Sm9obiBEb2UtMjAyNC0xMC0xMi0yMDI1LTA0LTEyLVVT" })
+            assertTrue(events.any { it.uid.value == "Sm9obiBEb2UtMjAyNC0wMS0wMS0yMDI0LTAxLTAxLVVT" })
+            assertTrue(events.any { it.uid.value == "Sm9obiBEb2UtMjAyMy0wNy0wMS0yMDI0LTAxLTAxLVVT" })
 
         }
     }
