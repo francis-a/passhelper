@@ -42,7 +42,7 @@ jobs:
             gradle-${{ runner.os }}-
 
       - name: Build and Test
-        run: ./gradlew clean build
+        run: ./gradlew clean nativeTestCompile
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
