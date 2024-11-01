@@ -62,7 +62,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.16")
     implementation("net.sf.biweekly:biweekly:0.6.8")
 
-    testImplementation(platform("org.junit:junit-bom:5.11.2"))
+    testImplementation(platform("org.junit:junit-bom:5.11.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 
     testImplementation(platform("org.testcontainers:testcontainers-bom:1.19.3"))
