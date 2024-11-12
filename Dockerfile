@@ -8,7 +8,7 @@ RUN yum -y update \
     && rm -rf /var/cache/yum
 
 # Graal VM
-ENV GRAAL_VERSION 23.0.0
+ENV GRAAL_VERSION 22.0.2
 RUN curl -4 -L https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-${GRAAL_VERSION}/graalvm-community-jdk-${GRAAL_VERSION}_linux-aarch64_bin.tar.gz | tar -xvz
 RUN mv graalvm-community-openjdk* /usr/lib/graalvm
 ENV JAVA_HOME /usr/lib/graalvm
