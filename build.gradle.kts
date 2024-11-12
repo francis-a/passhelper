@@ -54,7 +54,7 @@ dependencies {
 
     implementation("com.amazonaws:aws-lambda-java-events:3.14.0")
     implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
-    implementation("com.amazonaws:aws-lambda-java-runtime-interface-client:2.6.0")
+    implementation("com.amazonaws:aws-lambda-java-runtime-interface-client:2.4.2")
 
     implementation("org.thymeleaf:thymeleaf:3.1.2.RELEASE")
 
