@@ -8,7 +8,7 @@ PassHelper ensures you never miss a passport renewal for you or your family.
 
 You'll receive an automated email reminder six months before any passport expires. You can also download a calendar file that includes each passport's expiration date and a reminder event set six months in advance.
 
-The PassHelper web app displays all passwords grouped by expiration year.
+The PassHelper web app displays all passports grouped by expiration year.
 This overview gives you quick insights into whose passport is expiring next.
 
 PassHelper can be deployed to your personal AWS account using CloudFormation.
