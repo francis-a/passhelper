@@ -1,11 +1,11 @@
-name: Java CI with Gradle
+name: Test Lambdas
 
 on: push
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
 
+  test-api:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -13,6 +13,8 @@ jobs:
         with:
           use-installer: true
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: ./build-image.sh
 
       - run: sam build --use-container --template-file passhelper.cf.yaml ApiFunction --parameter-overrides IncludeHealthRoute=true
 
