@@ -1,0 +1,35 @@
+{
+  "version": "2.0",
+  "routeKey": "GET /health",
+  "rawPath": "/health",
+  "rawQueryString": "",
+  "cookies": [],
+  "headers": {
+    "Host": "127.0.0.1:3000",
+    "Connection": "keep-alive",
+    "X-Forwarded-Proto": "http",
+    "X-Forwarded-Port": "3000"
+  },
+  "requestContext": {
+    "accountId": "123456789012",
+    "apiId": "1234567890",
+    "http": {
+      "method": "GET",
+      "path": "/health",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "127.0.0.1",
+      "userAgent": "Custom User Agent String"
+    },
+    "requestId": "41872d30-9d12-488f-9104-24420d814bef",
+    "routeKey": "GET /health",
+    "stage": "v1",
+    "time": "23/Nov/2024:12:49:31 +0000",
+    "timeEpoch": 1732366171,
+    "domainName": "localhost",
+    "domainPrefix": "localhost"
+  },
+  "body": "",
+  "pathParameters": {},
+  "stageVariables": null,
+  "isBase64Encoded": false
+}

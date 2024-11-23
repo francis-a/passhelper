@@ -1,0 +1,19 @@
+name: Java CI with Gradle
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: sam build --use-container --template-file passhelper.cf.yaml ApiFunction --parameter-overrides IncludeHealthRoute=true
+
+      - run: sam local invoke ApiFunction --env-vars src/test/resources/integration/api/env.json --event src/test/resources/integration/api/request.json
