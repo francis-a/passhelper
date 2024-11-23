@@ -4,22 +4,58 @@ on: push
 
 jobs:
 
-  test-api:
+  build-image:
     runs-on: ubuntu-latest
+    outputs:
+      image-name: ${{ steps.image-name.outputs.image }}
     steps:
+      - uses: actions/checkout@v4
+
       - uses: docker/setup-qemu-action@v2
 
       - uses: docker/setup-buildx-action@v2
 
-      - uses: actions/checkout@v4
+      - id: image-name
+        run: echo "image=ttl.sh/io.eyecu.passhelper-${{ github.sha }}" >> "$GITHUB_OUTPUT"
 
-      - uses: aws-actions/setup-sam@v2
-        with:
-          use-installer: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          docker buildx build --platform linux/arm64 -t ${{ steps.image-name.outputs.image }}:1h
+      -
+        run: |
+          docker push ttl.sh/${{ steps.image-name.outputs.image }}:1h          
 
-      - run: docker buildx build --platform linux/arm64 -t al2023-graalvm:gradle .
-
-      - run: sam build --use-container --template-file passhelper.cf.yaml ApiFunction --parameter-overrides IncludeHealthRoute=true
-
-      - run: sam local invoke ApiFunction --env-vars src/test/resources/integration/api/env.json --event src/test/resources/integration/api/request.json
+#  test-api:
+#    needs: build-image
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - uses: aws-actions/setup-sam@v2
+#        with:
+#          use-installer: true
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Pull Docker image
+#        run: docker pull ${{ jobs.bu }}
+#
+#      - run: sam build --use-container --template-file passhelper.cf.yaml ApiFunction --parameter-overrides IncludeHealthRoute=true
+#
+#      - run: sam local invoke ApiFunction --env-vars src/test/resources/integration/api/env.json --event src/test/resources/integration/api/request.json
+#
+#  test-notification:
+#    needs: build-image
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - uses: aws-actions/setup-sam@v2
+#        with:
+#          use-installer: true
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Pull Docker image
+#        run: docker pull ${{ env.image }}
+#
+#      - run: sam build --use-container --template-file passhelper.cf.yaml NotificationFunction
+#
+#      - run: sam local invoke NotificationFunction --env-vars src/test/resources/integration/notification/env.json --event src/test/resources/integration/notification/request.json
