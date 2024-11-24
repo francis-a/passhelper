@@ -48,7 +48,6 @@ jobs:
       - name: SAM invoke ${{ inputs.function-name }} and check for "${{ inputs.success-check }}"
         run: |
           sam local invoke ${{ inputs.function-name }} \
-              --debug \
               --container-host-interface 0.0.0.0 \
               --container-host 172.17.0.1 \
               --env-vars ${{ inputs.env-vars }} \
