@@ -40,7 +40,7 @@ jobs:
       - name: SAM build ${{ inputs.function-name }} using image ${{ inputs.image-name }}
         run: |
           sam build \
-          --use-container \          
+          --use-container \
           --build-image ${{ inputs.image-name }} \
           --template-file passhelper.cf.yaml ${{ inputs.function-name }} \
           --parameter-overrides IncludeHealthRoute=true
