@@ -36,7 +36,7 @@ jobs:
 
       - uses: aws-actions/setup-sam@v2
         with:
-          use-installer: true
+          use-installer: false
           token: ${{ secrets.GITHUB_TOKEN }}
 
 #      - run: docker pull --platform linux/arm64 ${{ inputs.image-name }}
