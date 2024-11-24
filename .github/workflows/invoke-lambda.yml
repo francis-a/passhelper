@@ -40,19 +40,18 @@ jobs:
       - name: SAM build ${{ inputs.function-name }} using image ${{ inputs.image-name }}
         run: |
           sam build \
-          --use-container \
-          --docker-network bridge \
+          --use-container \          
           --build-image ${{ inputs.image-name }} \
           --template-file passhelper.cf.yaml ${{ inputs.function-name }} \
           --parameter-overrides IncludeHealthRoute=true
 
       - name: SAM invoke ${{ inputs.function-name }} and check for "${{ inputs.success-check }}"
         run: |
-          if ! sam local invoke ${{ inputs.function-name }} \
+          if ! sam local invoke "${{ inputs.function-name }}" \
               --debug \
-              --docker-network bridge \
+              --container-host-interface 0.0.0.0 \
               --env-vars ${{ inputs.env-vars }} \
-              --event ${{ inputs.event-file }} | grep -q -- "${{ inputs.success-check }}"; then
+              --event ${{ inputs.event-file }} 2>&1 | grep -q "${{ inputs.success-check }}"; then
             echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
             exit 1
           fi
