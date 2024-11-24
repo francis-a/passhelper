@@ -58,6 +58,6 @@ jobs:
           echo "::endgroup::"
           
           if ! grep -q "${{ inputs.success-check }}" invocation.log; then
-            echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
+            echo "::error::Lambda ${{ inputs.function-name }} did not return ${{ inputs.success-check }} in output"
             exit 1
           fi
