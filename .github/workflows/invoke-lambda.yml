@@ -41,7 +41,7 @@ jobs:
 
       - run: docker pull --platform linux/arm64 ${{ inputs.image-name }}
 
-      - run: sam build --use-container --template-file passhelper.cf.yaml ${{ inputs.function-name }}
+      - run: sam build --use-container --build-image ${{ inputs.image-name }} --template-file passhelper.cf.yaml ${{ inputs.function-name }}
 
       - run: |
           if ! sam local invoke ${{ inputs.function-name }} --env-vars ${{ inputs.env-vars }} --event ${{ inputs.event-file }} | grep -q ${{ inputs.success-check }}; then
