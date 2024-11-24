@@ -26,7 +26,7 @@ on:
 
 jobs:
   test-lambda:
-    runs-on: ci-codebuild-arm
+    runs-on: codebuild-passhelper-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
 
