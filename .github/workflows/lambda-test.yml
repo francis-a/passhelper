@@ -37,7 +37,7 @@ jobs:
 
   test-api:
     needs: build-image
-    uses: ./.github/workflows/invoke-lambda.yml@sam-local-test
+    uses: ./.github/workflows/invoke-lambda.yml
     with:
       image-name: ${{ needs.build-image.outputs.image-name }}
       function-name: ApiFunction
@@ -47,7 +47,7 @@ jobs:
 
   test-notification:
     needs: build-image
-    uses: ./.github/workflows/invoke-lambda.yml@sam-local-test
+    uses: ./.github/workflows/invoke-lambda.yml
     with:
       image-name: ${{ needs.build-image.outputs.image-name }}
       function-name: NotificationFunction
