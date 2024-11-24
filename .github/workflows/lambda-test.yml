@@ -5,7 +5,7 @@ on: push
 jobs:
 
   build-image:
-    runs-on: ubuntu-22.04-arm
+    runs-on: ubuntu-22.04-arm64
     outputs:
       image-name: ${{ steps.image-name.outputs.image }}
     steps:
