@@ -40,7 +40,7 @@ jobs:
       - run: docker pull ${{ inputs.image-name }}
 
       - run: |
-          sam build --use-container --docker-network sam-network --build-image ${{ inputs.image-name }} --template-file passhelper.cf.yaml ${{ inputs.function-name }}
+          sam build --use-container --docker-network sam-network --build-image ${{ inputs.image-name }} --template-file passhelper.cf.yaml ${{ inputs.function-name }} --parameter-overrides IncludeHealthRoute=true
       - env:
           SAM_CLI_CONTAINER_CONNECTION_TIMEOUT: 600
         run: |          
