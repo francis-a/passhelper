@@ -50,7 +50,7 @@ jobs:
         run: |
           if ! sam local invoke ${{ inputs.function-name }} \
               --debug \
-              --docker-network bridge \            
+              --docker-network bridge \
               --env-vars ${{ inputs.env-vars }} \
               --event ${{ inputs.event-file }} | grep -q -- "${{ inputs.success-check }}"; then
             echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
