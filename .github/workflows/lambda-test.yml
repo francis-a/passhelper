@@ -15,6 +15,13 @@ jobs:
 
       - uses: docker/setup-buildx-action@v2
 
+      - uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-        
+
       - id: image-name
         run: |
           uuid=$(uuidgen)
@@ -24,42 +31,40 @@ jobs:
           docker buildx build \
           --platform linux/arm64 \
           --tag ${{ steps.image-name.outputs.image }} \
-          --cache-from=type=registry,ref=ttl.sh/build-cache:1h \
-          --cache-to=type=registry,ref=ttl.sh/build-cache:1h,mode=max \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
           --push .       
 
-#  test-api:
-#    needs: build-image
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - uses: aws-actions/setup-sam@v2
-#        with:
-#          use-installer: true
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#
-#      - name: Pull Docker image
-#        run: docker pull ${{ jobs.bu }}
-#
-#      - run: sam build --use-container --template-file passhelper.cf.yaml ApiFunction --parameter-overrides IncludeHealthRoute=true
-#
-#      - run: sam local invoke ApiFunction --env-vars src/test/resources/integration/api/env.json --event src/test/resources/integration/api/request.json
-#
-#  test-notification:
-#    needs: build-image
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - uses: aws-actions/setup-sam@v2
-#        with:
-#          use-installer: true
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#
-#      - name: Pull Docker image
-#        run: docker pull ${{ env.image }}
-#
-#      - run: sam build --use-container --template-file passhelper.cf.yaml NotificationFunction
-#
-#      - run: sam local invoke NotificationFunction --env-vars src/test/resources/integration/notification/env.json --event src/test/resources/integration/notification/request.json
+  test-api:
+    needs: build-image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: docker pull ${{ needs.build-image.outputs.image-name.image }}
+
+      - run: sam build --use-container --template-file passhelper.cf.yaml ApiFunction --parameter-overrides IncludeHealthRoute=true
+
+      - run: sam local invoke ApiFunction --env-vars src/test/resources/integration/api/env.json --event src/test/resources/integration/api/request.json
+
+  test-notification:
+    needs: build-image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: docker pull ${{ needs.build-image.outputs.image-name.image }}
+
+      - run: sam build --use-container --template-file passhelper.cf.yaml NotificationFunction
+
+      - run: sam local invoke NotificationFunction --env-vars src/test/resources/integration/notification/env.json --event src/test/resources/integration/notification/request.json
