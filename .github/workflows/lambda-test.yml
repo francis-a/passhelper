@@ -16,7 +16,9 @@ jobs:
       - uses: docker/setup-buildx-action@v2
 
       - id: image-name
-        run: echo "image=ttl.sh/io.eyecu.passhelper-${{ github.sha }}" >> "$GITHUB_OUTPUT"
+        run: |
+          uuid=$(uuidgen)
+          echo "image=ttl.sh/${uuid}:1h" >> "$GITHUB_OUTPUT"
 
       - run: |
           docker buildx build \
