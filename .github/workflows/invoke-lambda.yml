@@ -52,7 +52,7 @@ jobs:
               --container-host-interface 0.0.0.0 \
               --env-vars ${{ inputs.env-vars }} \
               --event ${{ inputs.event-file }} 2>&1 | {
-                tee /dev/stderr | grep -q "${{ inputs.success-check }}" || {
+                grep --line-buffered "${{ inputs.success-check }}" || {
                   echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
                   exit 1
                 }
