@@ -12,6 +12,12 @@
       },
       {
         "pattern": "\\Qjni/libaws-lambda-jni.linux_musl-aarch_64.so\\E"
+      },
+      {
+        "pattern": "com/amazonaws/lambda/thirdparty/org/joda/time/tz/data/.*"
+      },
+      {
+        "pattern": "org/joda/time/tz/data/.*"
       }
     ]
   },

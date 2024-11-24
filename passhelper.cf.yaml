@@ -13,6 +13,13 @@ Parameters:
     Description: Email address reminders emails will be sent from
     Type: String
     Default: reminders
+  IncludeHealthRoute:
+    Description: Set to true to include the GET /health route
+    Type: String
+    Default: 'false'
+
+Conditions:
+  ShouldIncludeHealthRoute: !Equals [!Ref IncludeHealthRoute, 'true']
 
 Resources:
 
@@ -352,9 +359,16 @@ Resources:
           COGNITO_HOSTED_UI_URL: !Ref CognitoUserPoolDomain
           DOMAIN_NAME: !Ref ApiDomainName
           ICS_BUCKET_NAME: !Ref ICSBucket
-
     Metadata:
       BuildMethod: makefile
+
+  HealthRoute:
+    Condition: ShouldIncludeHealthRoute
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /health'
+      Target: !Sub 'integrations/${Integration}'
 
   FunctionInvokePermission:
     Type: AWS::Lambda::Permission

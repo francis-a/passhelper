@@ -48,7 +48,8 @@ class Router(
                 GetNotificationEndpoints::class to GetNotificationEndpoints(notificationEndpointService),
                 PostNotificationEndpoints::class to PostNotificationEndpoints(notificationEndpointService),
                 DeleteNotificationEndpoint::class to DeleteNotificationEndpoint(notificationEndpointService),
-                GetCalender::class to GetCalender(calenderService)
+                GetCalender::class to GetCalender(calenderService),
+                GetHealth::class to GetHealth()
             )
         }
     }

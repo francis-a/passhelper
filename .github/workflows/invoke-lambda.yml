@@ -1,0 +1,63 @@
+name: SAM invoke lambda
+
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        description: "Docker image name to pull"
+        required: true
+        type: string
+      function-name:
+        description: "Lambda function name to invoke"
+        required: true
+        type: string
+      env-vars:
+        description: "Path to environment variables file"
+        required: true
+        type: string
+      event-file:
+        description: "Path to event file"
+        required: true
+        type: string
+      success-check:
+        description: "String to check in the function's output for success"
+        required: true
+        type: string
+
+jobs:
+  test-lambda:
+    runs-on: codebuild-passhelper-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: docker pull ${{ inputs.image-name }}
+
+      - name: SAM build ${{ inputs.function-name }} using image ${{ inputs.image-name }}
+        run: |
+          sam build \
+          --use-container \
+          --build-image ${{ inputs.image-name }} \
+          --template-file passhelper.cf.yaml ${{ inputs.function-name }} \
+          --parameter-overrides IncludeHealthRoute=true
+
+      - name: SAM invoke ${{ inputs.function-name }} and check for "${{ inputs.success-check }}"
+        run: |
+          sam local invoke ${{ inputs.function-name }} \
+              --container-host-interface 0.0.0.0 \
+              --container-host 172.17.0.1 \
+              --env-vars ${{ inputs.env-vars }} \
+              --event ${{ inputs.event-file }} 2>&1 | tee invocation.log
+          
+          echo "::group::Full invoke Logs"
+          cat invocation.log
+          echo "::endgroup::"
+          
+          if ! grep -q "${{ inputs.success-check }}" invocation.log; then
+            echo "::error::Lambda ${{ inputs.function-name }} did not return ${{ inputs.success-check }} in output"
+            exit 1
+          fi
