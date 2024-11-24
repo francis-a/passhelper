@@ -58,7 +58,7 @@ jobs:
           cat invocation.log
           echo "::endgroup::"
           
-          if ! grep --line-buffered -q "${{ inputs.success-check }}" invocation.log; then
+          if ! grep -q "${{ inputs.success-check }}" invocation.log; then
             echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
             exit 1
           fi
