@@ -41,7 +41,8 @@ jobs:
           SAM_CLI_CONTAINER_CONNECTION_TIMEOUT: 600
         run: |
           sam build --use-container --build-image ${{ inputs.image-name }} --template-file passhelper.cf.yaml ${{ inputs.function-name }}
-          if ! sam local invoke ${{ inputs.function-name }} --docker-network host --env-vars ${{ inputs.env-vars }} --event ${{ inputs.event-file }} | grep -q -- "${{ inputs.success-check }}"; then
+          
+          if ! sam local invoke ${{ inputs.function-name }} --debug --env-vars ${{ inputs.env-vars }} --event ${{ inputs.event-file }} | grep -q -- "${{ inputs.success-check }}"; then
             echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
             exit 1
           fi
