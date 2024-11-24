@@ -38,7 +38,6 @@ jobs:
       - run: docker pull ${{ inputs.image-name }}
 
       - run: sam build --use-container --build-image ${{ inputs.image-name }} --template-file passhelper.cf.yaml ${{ inputs.function-name }}
-        timeout-minutes: 60
 
       - run: |
           if ! sam local invoke ${{ inputs.function-name }} --env-vars ${{ inputs.env-vars }} --event ${{ inputs.event-file }} | grep -q -- "${{ inputs.success-check }}"; then
@@ -46,5 +45,4 @@ jobs:
             exit 1
           fi
         env:
-          SAM_CLI_CONTAINER_CONNECTION_TIMEOUT: 120
-
+          SAM_CLI_CONTAINER_CONNECTION_TIMEOUT: 600
