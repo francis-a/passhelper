@@ -37,7 +37,7 @@ jobs:
 
   test-api:
     needs: build-image
-    uses: ./.github/invoke-lambda.yml
+    uses: ./.github/invoke-lambda.yml@${{ github.ref }}
     with:
       image-name: ${{ needs.build-image.outputs.image-name }}
       function-name: ApiFunction
@@ -47,7 +47,7 @@ jobs:
 
   test-notification:
     needs: build-image
-    uses: ./.github/invoke-lambda.yml
+    uses: ./.github/invoke-lambda.yml@${{ github.ref }}
     with:
       image-name: ${{ needs.build-image.outputs.image-name }}
       function-name: NotificationFunction
