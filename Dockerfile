@@ -1,8 +1,8 @@
 FROM --platform=linux/arm64 public.ecr.aws/amazonlinux/amazonlinux:2023
 
 RUN yum -y update \
-    && yum install -y unzip tar gzip gcc gcc-c++ gcc-gfortran \
-    libcurl-devel openssl openssl-devel \
+    && yum install -y unzip tar gzip bzip2-devel ed gcc gcc-c++ gcc-gfortran \
+    less libcurl-devel openssl openssl-devel readline-devel xz-devel \
     zlib-devel glibc-static zlib-static \
     python3-pip \
     && rm -rf /var/cache/yum
