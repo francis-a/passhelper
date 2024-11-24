@@ -1,0 +1,46 @@
+name: SAM invoke lambda
+
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        description: "Docker image name to pull"
+        required: true
+        type: string
+      function-name:
+        description: "Lambda function name to invoke"
+        required: true
+        type: string
+      env-vars:
+        description: "Path to environment variables file"
+        required: true
+        type: string
+      event-file:
+        description: "Path to event file"
+        required: true
+        type: string
+      success-check:
+        description: "String to check in the function's output for success"
+        required: true
+        type: string
+
+jobs:
+  test-lambda:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: docker pull ${{ inputs.image-name }}
+
+      - run: sam build --use-container --template-file passhelper.cf.yaml ${{ inputs.function-name }}
+
+      - run: |
+          if ! sam local invoke ${{ inputs.function-name }} --env-vars ${{ inputs.env-vars }} --event ${{ inputs.event-file }} | grep -q ${{ inputs.success-check }}; then
+            echo "::error::Lambda invocation failed"
+            exit 1
+          fi
