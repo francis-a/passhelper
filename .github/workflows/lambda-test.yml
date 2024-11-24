@@ -3,7 +3,6 @@ name: Test Lambdas
 on: push
 
 jobs:
-
   build-image:
     runs-on: ubuntu-latest
     outputs:
@@ -22,12 +21,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-
 
-      - id: image-name
+      - name: Generated UUID
+        id: image-name
         run: |
           uuid=$(uuidgen)
           echo "image=ttl.sh/${uuid}:1h" >> "$GITHUB_OUTPUT"
 
-      - run: |
+      - name: Build and tag ${{ steps.image-name.outputs.image }}
+        run: |
           docker buildx build \
           --platform linux/arm64 \
           --tag ${{ steps.image-name.outputs.image }} \

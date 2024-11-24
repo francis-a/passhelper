@@ -10,17 +10,11 @@ jobs:
       matrix:
         java-version: [ 22 ]
 
-    services:
-      docker:
-        image: docker:20.10.16
-        options: --privileged  # Needed to enable Docker-in-Docker
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - uses: graalvm/setup-graalvm@v1
-        name: Set up Graal ${{ matrix.java-version }}
+      - name: Set up Graal ${{ matrix.java-version }}
+        uses: graalvm/setup-graalvm@v1
         with:
           java-version: '${{ matrix.java-version }}'
           distribution: 'graalvm-community'
@@ -28,11 +22,9 @@ jobs:
           native-image-job-reports: 'true'
           set-java-home: 'true'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v3
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
