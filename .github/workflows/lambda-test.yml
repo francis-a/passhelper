@@ -4,54 +4,53 @@ on: push
 
 jobs:
 
-#  build-image:
-#    runs-on: ubuntu-latest
-#    outputs:
-#      image-name: ${{ steps.image-name.outputs.image }}
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - uses: docker/setup-qemu-action@v3
-#
-#      - uses: docker/setup-buildx-action@v3
-#
-#      - uses: actions/cache@v4
-#        with:
-#          path: /tmp/.buildx-cache
-#          key: ${{ runner.os }}-docker-${{ github.sha }}
-#          restore-keys: |
-#            ${{ runner.os }}-docker-
-#
-#      - id: image-name
-#        run: |
-#          uuid=$(uuidgen)
-#          echo "image=ttl.sh/${uuid}:1h" >> "$GITHUB_OUTPUT"
-#
-#      - run: |
-#          docker buildx build \
-#          --platform linux/arm64 \
-#          --tag ${{ steps.image-name.outputs.image }} \
-#          --cache-from=type=local,src=/tmp/.buildx-cache \
-#          --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
-#          --push .
+  build-image:
+    runs-on: ubuntu-latest
+    outputs:
+      image-name: ${{ steps.image-name.outputs.image }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-qemu-action@v3
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      - id: image-name
+        run: |
+          uuid=$(uuidgen)
+          echo "image=ttl.sh/${uuid}:1h" >> "$GITHUB_OUTPUT"
+
+      - run: |
+          docker buildx build \
+          --platform linux/arm64 \
+          --tag ${{ steps.image-name.outputs.image }} \
+          --cache-from=type=local,src=/tmp/.buildx-cache \
+          --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
+          --push .
 
   api-lambda-test:
-#    needs: build-image
+    needs: build-image
     uses: ./.github/workflows/invoke-lambda.yml
     with:
-      image-name: ttl.sh/7516671c-a345-45d3-8225-8cf2e38f39d9:1h
-#      image-name: ${{ needs.build-image.outputs.image-name }}
+      image-name: ${{ needs.build-image.outputs.image-name }}
       function-name: ApiFunction
       env-vars: src/test/resources/integration/api/env.json
       event-file: src/test/resources/integration/api/request.json
       success-check: 'status: up'
 
-#  notification-lambda-test:
-#    needs: build-image
-#    uses: ./.github/workflows/invoke-lambda.yml
-#    with:
-#      image-name: ${{ needs.build-image.outputs.image-name }}
-#      function-name: NotificationFunction
-#      env-vars: src/test/resources/integration/notification/env.json
-#      event-file: src/test/resources/integration/notification/request.json
-#      success-check: 'OK'
+  notification-lambda-test:
+    needs: build-image
+    uses: ./.github/workflows/invoke-lambda.yml
+    with:
+      image-name: ${{ needs.build-image.outputs.image-name }}
+      function-name: NotificationFunction
+      env-vars: src/test/resources/integration/notification/env.json
+      event-file: src/test/resources/integration/notification/request.json
+      success-check: 'OK'

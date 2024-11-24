@@ -52,7 +52,13 @@ jobs:
               --container-host-interface 0.0.0.0 \
               --container-host 172.17.0.1 \
               --env-vars ${{ inputs.env-vars }} \
-              --event ${{ inputs.event-file }} 2>&1 | tee invocation.log | grep --line-buffered "${{ inputs.success-check }}" || {
-                echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
-                exit 1
-              }
+              --event ${{ inputs.event-file }} 2>&1 | tee invocation.log
+          
+          echo "::group::Full invoke Logs"
+          cat invocation.log
+          echo "::endgroup::"
+          
+          if ! grep --line-buffered -q "${{ inputs.success-check }}" invocation.log; then
+            echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
+            exit 1
+          fi
