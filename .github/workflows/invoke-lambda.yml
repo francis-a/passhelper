@@ -50,11 +50,9 @@ jobs:
           sam local invoke ${{ inputs.function-name }} \
               --debug \
               --container-host-interface 0.0.0.0 \
-              --container-host host.docker.internal \ 
+              --container-host 172.17.0.1 \
               --env-vars ${{ inputs.env-vars }} \
-              --event ${{ inputs.event-file }} 2>&1 | {
-                grep --line-buffered "${{ inputs.success-check }}" || {
-                  echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
-                  exit 1
-                }
+              --event ${{ inputs.event-file }} 2>&1 | tee invocation.log | grep --line-buffered "${{ inputs.success-check }}" || {
+                echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
+                exit 1
               }
