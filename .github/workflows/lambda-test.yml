@@ -43,7 +43,7 @@ jobs:
       function-name: ApiFunction
       env-vars: src/test/resources/integration/api/env.json
       event-file: src/test/resources/integration/api/request.json
-      success-check: 'status: upz'
+      success-check: 'status: up'
 
   notification-lambda-test:
     needs: build-image
@@ -53,4 +53,4 @@ jobs:
       function-name: NotificationFunction
       env-vars: src/test/resources/integration/notification/env.json
       event-file: src/test/resources/integration/notification/request.json
-      success-check: 'OKz'
+      success-check: 'OK'
