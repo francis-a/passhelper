@@ -47,11 +47,13 @@ jobs:
 
       - name: SAM invoke ${{ inputs.function-name }} and check for "${{ inputs.success-check }}"
         run: |
-          if ! sam local invoke "${{ inputs.function-name }}" \
+          sam local invoke ${{ inputs.function-name }} \
               --debug \
               --container-host-interface 0.0.0.0 \
               --env-vars ${{ inputs.env-vars }} \
-              --event ${{ inputs.event-file }} 2>&1 | grep --line-buffered -q "${{ inputs.success-check }}"; then
-            echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
-            exit 1
-          fi
+              --event ${{ inputs.event-file }} 2>&1 | {
+                tee /dev/stderr | grep -q "${{ inputs.success-check }}" || {
+                  echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
+                  exit 1
+                }
+              }
