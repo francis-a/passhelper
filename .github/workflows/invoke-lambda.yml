@@ -35,16 +35,24 @@ jobs:
           use-installer: false
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: docker network create sam-network
-
       - run: docker pull ${{ inputs.image-name }}
 
-      - run: |
-          sam build --use-container --docker-network sam-network --build-image ${{ inputs.image-name }} --template-file passhelper.cf.yaml ${{ inputs.function-name }} --parameter-overrides IncludeHealthRoute=true
-      - env:
-          SAM_CLI_CONTAINER_CONNECTION_TIMEOUT: 600
-        run: |          
-          if ! sam local invoke ${{ inputs.function-name }} --docker-network sam-network --env-vars ${{ inputs.env-vars }} --event ${{ inputs.event-file }} | grep -q -- "${{ inputs.success-check }}"; then
+      - name: SAM build ${{ inputs.function-name }} using image ${{ inputs.image-name }}
+        run: |
+          sam build \
+          --use-container \
+          --docker-network bridge \
+          --build-image ${{ inputs.image-name }} \
+          --template-file passhelper.cf.yaml ${{ inputs.function-name }} \
+          --parameter-overrides IncludeHealthRoute=true
+
+      - name: SAM invoke ${{ inputs.function-name }} and check for "${{ inputs.success-check }}"
+        run: |
+          if ! sam local invoke ${{ inputs.function-name }} \
+              --debug \
+              --docker-network bridge \            
+              --env-vars ${{ inputs.env-vars }} \
+              --event ${{ inputs.event-file }} | grep -q -- "${{ inputs.success-check }}"; then
             echo "::error::Lambda ${{ inputs.function-name }} invocation failed"
             exit 1
           fi
