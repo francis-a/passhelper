@@ -4,7 +4,7 @@
 
 ![Integration tests](https://github.com/francis-a/passhelper/actions/workflows/lambda-test.yml/badge.svg)
 
-**A self-hosted application passport tracking built using Kotlin, GraalVM and deployed as a custom AWS Lambda runtime.**
+**A self-hosted application for tracking passport expiration dates built using Kotlin, GraalVM and deployed as a custom AWS Lambda runtime.**
 
 PassHelper ensures you never miss a passport renewal for you or your family.
 
