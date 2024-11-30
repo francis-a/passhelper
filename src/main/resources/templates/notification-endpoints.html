@@ -1,5 +1,7 @@
 <!--/*@thymesVar id="notificationEndpoints" type="java.util.List<io.eyecu.passhelper.models.NotificationEndpointView>"*/-->
 <!--/*@thymesVar id="addNotificationEndpointForm" type="io.eyecu.passhelper.models.AddNotificationEndpointForm"*/-->
+<!--/*@thymesVar id="users" type="java.util.List<io.eyecu.passhelper.models.UserView>"*/-->
+<!--/*@thymesVar id="user" type="io.eyecu.passhelper.models.UserView"*/-->
 
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light" xmlns:th="http://www.thymeleaf.org">
@@ -24,26 +26,86 @@
     <div class="container mb-3">
         <div class="card shadow-sm">
             <div class="card-body bg-light-subtle">
-                <p class="card-subtitle text-body-secondary mb-3 border-bottom">Passport expiration reminder emails will be sent to all email addresses listed
-                    below.</p>
+                <p class="card-subtitle text-body-secondary mb-3">
+                    <strong class="text-body">Notifications:</strong> If <em>Notifications</em> are enabled, the user
+                    will
+                    receive passport expiration reminders.
+                </p>
+                <p class="card-subtitle text-body-secondary mb-3 border-bottom">
+                    <strong class="text-body">Login:</strong> If <em>Login</em> is enabled,
+                    the user will be able to log in to PassHelper.
+                    Toggling <em>Login</em> to true will email the user with instructions
+                    on how to set or reset their password.
+                </p>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Email</th>
+                        <th scope="col">Notifications</th>
+                        <th scope="col">Login</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="user : ${users}">
+                        <tr>
+                            <td th:text="${user.emailAddress}">a@b.com</td>
+                            <th>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" aria-label="Notifications enabled"
+                                           th:username="${user.username}"
+                                           th:checked="${user.emailEnabled}"
+                                           th:value="${user.emailEnabled}"
+                                           onchange="updateAttribute(this.getAttribute('username'), 'email', this.checked)">
+                                </div>
+                            </th>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" aria-label="Login enabled"
+                                           th:username="${user.username}"
+                                           th:checked="${user.loginEnabled}"
+                                           th:value="${user.loginEnabled}"
+                                           onchange="updateAttribute(this.getAttribute('username'), 'login', this.checked)"
+                                           th:disabled="${user.owner}">
+                                </div>
+                            </td>
+                            <td>
+                                <th:block th:if="${!user.owner}">
+                                    <a th:username="${user.username}" href="#"
+                                       onclick="deleteEmail(this.getAttribute('username'))"
+                                       class="float-end pe-3 text-danger text-decoration-none">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </th:block>
+                            </td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+
+
                 <th:block th:each="notificationEndpoint : ${notificationEndpoints}">
                     <div class="row mb-3">
                         <div class="col-10">
                             <span th:text="${notificationEndpoint.email}">a@b.com</span>
                         </div>
                         <div class="col-2">
-                            <a th:email-id="${notificationEndpoint.id}" href="#" onclick="deleteEmail(this.getAttribute('email-id'))"
+                            <a th:email-id="${notificationEndpoint.id}" href="#"
+                               onclick="deleteEmail(this.getAttribute('email-id'))"
                                class="float-end pe-3 text-danger text-decoration-none">
                                 <i class="bi bi-trash"></i>
                             </a>
                         </div>
                     </div>
                 </th:block>
-                <form method="post" th:action="@{notification-endpoints}" enctype="application/x-www-form-urlencoded" th:object="${addNotificationEndpointForm}">
+                <form method="post" th:action="@{notification-endpoints}" enctype="application/x-www-form-urlencoded"
+                      th:object="${addNotificationEndpointForm}">
                     <div class="row">
                         <div class="col-10">
-                            <input type="email" class="form-control" placeholder="Add a new email address" id="email" name="email"
-                                   aria-label="Add a new email address" th:required="required" th:value="*{email}" required>
+                            <input type="email" class="form-control" placeholder="Add a new email address" id="email"
+                                   name="email"
+                                   aria-label="Add a new email address" th:required="required" th:value="*{email}"
+                                   required>
                         </div>
                         <div class="col-2">
                             <button type="submit" class="float-end btn btn-primary">Add</button>
@@ -60,6 +122,10 @@
         crossorigin="anonymous"></script>
 
 <script th:inline="javascript">
+
+    function updateAttribute(user, attribute, value) {
+        alert(user + ' ' + attribute + ' ' + value + ' ' + attribute);
+    }
 
     function deleteEmail(email) {
         let result = window.confirm("Are you sure you want to delete this email address?")

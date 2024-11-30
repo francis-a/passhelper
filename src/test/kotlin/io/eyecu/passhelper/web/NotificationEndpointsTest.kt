@@ -15,7 +15,7 @@ import org.thymeleaf.context.Context
 class GetNotificationEndpointsTest {
 
     private val notificationEndpointService = mock<NotificationEndpointService>()
-    private val getNotificationEndpointsRoute = GetNotificationEndpoints(notificationEndpointService)
+    private val getNotificationEndpointsRoute = GetNotificationEndpoints(notificationEndpointService, mock())
 
     @Test
     fun `should route correctly`() {
@@ -32,7 +32,7 @@ class GetNotificationEndpointsTest {
 class PostNotificationEndpointsTest {
 
     private val notificationEndpointService = mock<NotificationEndpointService>()
-    private val postNotificationEndpointsRoute = PostNotificationEndpoints(notificationEndpointService)
+    private val postNotificationEndpointsRoute = PostNotificationEndpoints(notificationEndpointService, mock())
 
     @Test
     fun `should route correctly`() {
@@ -71,7 +71,7 @@ class PostNotificationEndpointsTest {
 class DeleteNotificationEndpointTest {
 
     private val notificationEndpointService = mock<NotificationEndpointService>()
-    private val deleteNotificationEndpointRoute = DeleteNotificationEndpoint(notificationEndpointService)
+    private val deleteNotificationEndpointRoute = DeleteNotificationEndpoint(notificationEndpointService, mock())
 
     @Test
     fun `should route correctly`() {

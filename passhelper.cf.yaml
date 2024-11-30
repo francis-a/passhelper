@@ -108,6 +108,15 @@ Resources:
   UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
+      Schema:
+        - Name: isOwner
+          AttributeDataType: Boolean
+          Mutable: false
+          Required: false
+        - Name: emailEnabled
+          AttributeDataType: Boolean
+          Mutable: true
+          Required: false
       AccountRecoverySetting:
         RecoveryMechanisms:
           - Name: verified_email
@@ -170,6 +179,12 @@ Resources:
       UserAttributes:
         - Name: email
           Value: !Ref InitialUserEmailAddress
+        - Name: email_verified
+          Value: 'true'
+        - Name: custom:isOwner
+          Value: 'true'
+        - Name: custom:emailEnabled
+          Value: 'false'
 
   HttpApiMapping:
     Type: AWS::ApiGatewayV2::ApiMapping
@@ -334,6 +349,21 @@ Resources:
                 Resource:
                   - !Sub "arn:aws:s3:::${ICSBucket}/*"
                   - !Sub "arn:aws:s3:::${ICSBucket}"
+        - PolicyName: Cognito
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cognito-idp:ListUsers
+                  - cognito-idp:AdminDisableUser
+                  - cognito-idp:AdminEnableUser
+                  - cognito-idp:AdminUpdateUserAttributes
+                  - cognito-idp:UpdateUserAttributes
+                  - cognito-idp:AdminCreateUser
+                  - cognito-idp:AdminDeleteUser
+                Resource:
+                  - !GetAtt UserPool.Arn
 
   ApiFunction:
     Type: AWS::Serverless::Function
@@ -492,10 +522,10 @@ Resources:
 ## Note: After the initial deployment is complete, you can uncomment this stack and rerun
 ## Note: the deployment.
 ## Note:
-#  CognitoCustomizations:
-#    Type: AWS::CloudFormation::Stack
-#    Properties:
-#      Parameters:
-#        UserPoolId: !Ref UserPool
-#        UserPoolArn: !GetAtt UserPool.Arn
-#      TemplateURL: ./passhelper.cognito.customization.cf.yaml
+  CognitoCustomizations:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        UserPoolId: !Ref UserPool
+        UserPoolArn: !GetAtt UserPool.Arn
+      TemplateURL: ./passhelper.cognito.customization.cf.yaml

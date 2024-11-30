@@ -7,7 +7,9 @@ import io.eyecu.passhelper.service.CalenderService
 import io.eyecu.passhelper.service.CognitoService
 import io.eyecu.passhelper.service.NotificationEndpointService
 import io.eyecu.passhelper.service.PassportService
+import io.eyecu.passhelper.service.UserPoolService
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
+import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import software.amazon.awssdk.services.s3.S3Client
 import java.lang.System.getenv
@@ -15,6 +17,7 @@ import java.lang.System.getenv
 interface ApiGatewayServiceProvider {
     val passportService: PassportService
     val notificationEndpointService: NotificationEndpointService
+    val userPoolService: UserPoolService
     val cognitoService: CognitoService
     val calenderService: CalenderService
     val domainName: String
@@ -65,5 +68,11 @@ object LambdaApiGatewayServiceProvider : ApiGatewayServiceProvider {
             icsBucket = icsBucket,
             passportService = passportService,
             awsS3 = S3Client.builder().build()
+        )
+
+    override val userPoolService =
+        UserPoolService(
+            CognitoIdentityProviderClient.builder().build(),
+            cognitoUserPoolId
         )
 }

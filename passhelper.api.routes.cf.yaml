@@ -106,3 +106,10 @@ Resources:
       ApiId: !Ref Api
       RouteKey: 'DELETE /notification-endpoints/{id}'
       Target: !Sub 'integrations/${Integration}'
+
+  PatchUserAttributeValueEndpoint:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'PATCH /users/{username}/attributes/{attribute}/value/{value}'
+      Target: !Sub 'integrations/${Integration}'

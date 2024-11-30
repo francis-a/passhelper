@@ -45,9 +45,10 @@ class Router(
                 GetEdit::class to GetEdit(passportService),
                 PostEdit::class to PostEdit(passportService),
                 DeleteEdit::class to DeleteEdit(passportService),
-                GetNotificationEndpoints::class to GetNotificationEndpoints(notificationEndpointService),
-                PostNotificationEndpoints::class to PostNotificationEndpoints(notificationEndpointService),
-                DeleteNotificationEndpoint::class to DeleteNotificationEndpoint(notificationEndpointService),
+                GetNotificationEndpoints::class to GetNotificationEndpoints(notificationEndpointService, userPoolService),
+                PostNotificationEndpoints::class to PostNotificationEndpoints(notificationEndpointService, userPoolService),
+                DeleteNotificationEndpoint::class to DeleteNotificationEndpoint(notificationEndpointService, userPoolService),
+                PatchUserAttributeValueEndpoint::class to PatchUserAttributeValueEndpoint(userPoolService),
                 GetCalender::class to GetCalender(calenderService),
                 GetHealth::class to GetHealth()
             )
