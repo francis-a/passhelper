@@ -8,38 +8,35 @@ import software.amazon.awssdk.services.ses.model.Message
 import software.amazon.awssdk.services.ses.model.SendEmailRequest
 
 class EmailService(
-    private val sesClient: SesClient,
-    domain: String,
-    emailName: String
+    private val sesClient: SesClient
 ) {
 
-    private val fromAddress = "$emailName@$domain"
-
     fun sendEmail(
+        from: String,
         to: String,
         template: String,
         source: String,
         subject: String,
         content: Map<String, Any>
-    ) =
-        sesClient.sendEmail(
-            SendEmailRequest.builder()
-                .source("\"PassHelper - $source\" <$fromAddress>")
-                .destination(
-                    Destination.builder()
-                        .toAddresses(to)
-                        .build()
-                ).message(
-                    Message.builder()
-                        .subject {
-                            it.data(subject).charset("UTF-8")
-                        }.body { body ->
-                            body.html {
-                                it.data(toBody(template, content)).charset("UTF-8")
-                            }
-                        }.build()
-                ).build()
-        )
+    ) {
+        val request = SendEmailRequest.builder()
+            .source("\"PassHelper - $source\" <$from>")
+            .destination(
+                Destination.builder()
+                    .toAddresses(to)
+                    .build()
+            ).message(
+                Message.builder()
+                    .subject {
+                        it.data(subject).charset("UTF-8")
+                    }.body { body ->
+                        body.html {
+                            it.data(toBody(template, content)).charset("UTF-8")
+                        }
+                    }.build()
+            ).build()
+        sesClient.sendEmail(request)
+    }
 
     private fun toBody(template: String, content: Map<String, Any>): String {
         val context = Context()

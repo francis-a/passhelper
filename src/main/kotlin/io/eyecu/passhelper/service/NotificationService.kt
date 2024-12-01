@@ -12,7 +12,8 @@ class NotificationService(
     private val emailService: EmailService,
     private val userPoolService: UserPoolService,
     private val passportRepository: PassportRepository,
-    private val domain: String
+    private val domain: String,
+    private val emailName: String
 ) {
 
     fun send(partitionKey: PartitionKey, sortKey: SortKey) {
@@ -21,6 +22,7 @@ class NotificationService(
 
         emails.forEach { email ->
             emailService.sendEmail(
+                from = "$emailName@$domain",
                 to = email,
                 template = "emails/reminder",
                 source = "Passport Renewal Reminder",

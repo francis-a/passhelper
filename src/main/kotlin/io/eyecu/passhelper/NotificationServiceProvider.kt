@@ -28,9 +28,7 @@ object LambdaNotificationEndpointServiceServiceProvider : NotificationServicePro
     private val sesClient: SesClient = SesClient.builder().build()
 
     private val emailService = EmailService(
-        sesClient = sesClient,
-        emailName = emailName,
-        domain = emailDomain
+        sesClient = sesClient
     )
 
     override val notificationService = NotificationService(
@@ -45,6 +43,7 @@ object LambdaNotificationEndpointServiceServiceProvider : NotificationServicePro
             tableName = passportTableName,
             client = dynamoDbClient
         ),
+        emailName = emailName,
         domain = emailDomain
     )
 }

@@ -136,12 +136,13 @@ class UserPoolService(
 
             emailService.sendEmail(
                 to = user.userAttributes().emailAddress(),
+                from = "no-reply@$domainName",
                 template = "emails/reset",
                 source = "Reset Password",
                 subject = "PassHelper Temporary Password",
                 content = mapOf(
                     "temporaryPassword" to newPassword,
-                    "loginUrl" to domainName
+                    "loginUrl" to "https://$domainName"
                 )
             )
         } else {

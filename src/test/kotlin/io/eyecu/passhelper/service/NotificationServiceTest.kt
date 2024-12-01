@@ -29,7 +29,8 @@ class NotificationServiceTest {
         emailService,
         userPoolService,
         passportRepository,
-        domain
+        domain,
+        "no-reply"
     )
 
     @Test
@@ -45,11 +46,12 @@ class NotificationServiceTest {
         notificationService.send(partitionKey, sortKey)
 
         verify(emailService).sendEmail(
-            "test1@example.com",
-            "emails/reminder",
-            "Passport Renewal Reminder",
-            "It's time to renew your passport ${passport.firstName}!",
-            mapOf(
+            from = "no-reply@example.com",
+            to = "test1@example.com",
+            template = "emails/reminder",
+            source = "Passport Renewal Reminder",
+            subject = "It's time to renew your passport ${passport.firstName}!",
+            content = mapOf(
                 "expiringPassport" to ExpiringPassportEmailView(
                     fullName = "${passport.firstName} ${passport.lastName}",
                     countryName = passport.countryCode.countryCodeToCountryName(),
@@ -61,11 +63,12 @@ class NotificationServiceTest {
         )
 
         verify(emailService).sendEmail(
-            "test2@example.com",
-            "emails/reminder",
-            "Passport Renewal Reminder",
-            "It's time to renew your passport ${passport.firstName}!",
-            mapOf(
+            from = "no-reply@example.com",
+            to = "test2@example.com",
+            template = "emails/reminder",
+            source = "Passport Renewal Reminder",
+            subject = "It's time to renew your passport ${passport.firstName}!",
+            content = mapOf(
                 "expiringPassport" to ExpiringPassportEmailView(
                     fullName = "${passport.firstName} ${passport.lastName}",
                     countryName = passport.countryCode.countryCodeToCountryName(),
@@ -86,7 +89,7 @@ class NotificationServiceTest {
 
         notificationService.send(partitionKey, sortKey)
 
-        verify(emailService, never()).sendEmail(any(), any(), any(), any(), any())
+        verify(emailService, never()).sendEmail(any(), any(), any(), any(), any(), any())
     }
 
     @Test
@@ -100,7 +103,7 @@ class NotificationServiceTest {
 
         notificationService.send(partitionKey, sortKey)
 
-        verify(emailService, never()).sendEmail(any(), any(), any(), any(), any())
+        verify(emailService, never()).sendEmail(any(), any(), any(), any(), any(), any())
     }
 
     private fun createEmails(vararg addresses: String) = addresses.map {

@@ -191,7 +191,7 @@ class UserPoolServiceTest {
 
         verify(cognitoClient).adminEnableUser(any<AdminEnableUserRequest>())
         verify(cognitoClient).adminSetUserPassword(any<AdminSetUserPasswordRequest>())
-        verify(emailService).sendEmail(eq("user@example.com"), eq("emails/reset"), any(), any(), any())
+        verify(emailService).sendEmail(eq("no-reply@example.com"), eq("user@example.com"), eq("emails/reset"), any(), any(), any())
     }
 
     @Test

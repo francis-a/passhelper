@@ -67,8 +67,6 @@ object LambdaApiGatewayServiceProvider : ApiGatewayServiceProvider {
         UserPoolService(
             emailService = EmailService(
                 sesClient = SesClient.create(),
-                emailName = "reset",
-                domain = domainName,
             ),
             cognitoClient = CognitoIdentityProviderClient.builder().build(),
             userPoolId = cognitoUserPoolId,
