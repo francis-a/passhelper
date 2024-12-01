@@ -50,7 +50,7 @@ class NotificationService(
     private fun Passport.body(): String {
         val context = Context()
         context.setVariable("expiringPassport", toView())
-        return templateEngine.process("email", context)
+        return templateEngine.process("emails/reminder", context)
     }
 
     private fun Passport.toView() = ExpiringPassportEmailView(
