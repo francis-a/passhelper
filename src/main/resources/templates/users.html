@@ -1,5 +1,5 @@
 <!--/*@thymesVar id="notificationEndpoints" type="java.util.List<io.eyecu.passhelper.models.NotificationEndpointView>"*/-->
-<!--/*@thymesVar id="addNotificationEndpointForm" type="io.eyecu.passhelper.models.AddNotificationEndpointForm"*/-->
+<!--/*@thymesVar id="addNewUserForm" type="io.eyecu.passhelper.models.AddUserForm"*/-->
 <!--/*@thymesVar id="users" type="java.util.List<io.eyecu.passhelper.models.UserView>"*/-->
 <!--/*@thymesVar id="user" type="io.eyecu.passhelper.models.UserView"*/-->
 
@@ -22,7 +22,7 @@
 </head>
 <body>
 <main>
-    <th:block th:replace="~{fragments/header.html :: header(${ {'Notification Email Address'} })}"></th:block>
+    <th:block th:replace="~{fragments/header.html :: header(${ {'Users and Email Addresses'} })}"></th:block>
     <div class="container mb-3">
         <div class="card shadow-sm">
             <div class="card-body bg-light-subtle">
@@ -72,7 +72,7 @@
                             <td>
                                 <th:block th:if="${!user.owner}">
                                     <a th:username="${user.username}" href="#"
-                                       onclick="deleteEmail(this.getAttribute('username'))"
+                                       onclick="deleteUser(this.getAttribute('username'))"
                                        class="float-end pe-3 text-danger text-decoration-none">
                                         <i class="bi bi-trash"></i>
                                     </a>
@@ -83,23 +83,8 @@
                     </tbody>
                 </table>
 
-
-                <th:block th:each="notificationEndpoint : ${notificationEndpoints}">
-                    <div class="row mb-3">
-                        <div class="col-10">
-                            <span th:text="${notificationEndpoint.email}">a@b.com</span>
-                        </div>
-                        <div class="col-2">
-                            <a th:email-id="${notificationEndpoint.id}" href="#"
-                               onclick="deleteEmail(this.getAttribute('email-id'))"
-                               class="float-end pe-3 text-danger text-decoration-none">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </div>
-                    </div>
-                </th:block>
-                <form method="post" th:action="@{notification-endpoints}" enctype="application/x-www-form-urlencoded"
-                      th:object="${addNotificationEndpointForm}">
+                <form method="post" th:action="@{users}" enctype="application/x-www-form-urlencoded"
+                      th:object="${addNewUserForm}">
                     <div class="row">
                         <div class="col-10">
                             <input type="email" class="form-control" placeholder="Add a new email address" id="email"
@@ -123,22 +108,26 @@
 
 <script th:inline="javascript">
 
-    function updateAttribute(user, attribute, value) {
-        alert(user + ' ' + attribute + ' ' + value + ' ' + attribute);
+    function updateAttribute(username, attribute, value) {
+        performRequest("PATCH", "/users/" + username + "/attributes/" + attribute + "/value/" + value)
     }
 
-    function deleteEmail(email) {
-        let result = window.confirm("Are you sure you want to delete this email address?")
+    function deleteUser(username) {
+        let result = window.confirm("Are you sure you want to delete this user?")
         if (result) {
-            let request = new XMLHttpRequest()
-            request.open("DELETE", "/notification-endpoints/" + email)
-            request.onreadystatechange = () => {
-                if (request.readyState === 4) {
-                    document.location = "/notification-endpoints"
-                }
-            }
-            request.send()
+            performRequest("DELETE", "/users/" + username)
         }
+    }
+
+    function performRequest(type, endpoint) {
+        let request = new XMLHttpRequest()
+        request.open(type, endpoint)
+        request.onreadystatechange = () => {
+            if (request.readyState === 4) {
+                document.location = "/users"
+            }
+        }
+        request.send()
     }
 
 </script>

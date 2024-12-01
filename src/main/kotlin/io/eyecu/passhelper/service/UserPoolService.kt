@@ -7,10 +7,15 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminCreate
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDeleteUserRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDisableUserRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminEnableUserRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminResetUserPasswordRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
+import software.amazon.awssdk.services.cognitoidentityprovider.model.DeliveryMediumType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.MessageActionType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType
+import java.util.UUID
 
 class UserPoolService(
     private val cognitoClient: CognitoIdentityProviderClient,
@@ -32,7 +37,6 @@ class UserPoolService(
         )
     }
 
-
     fun listAllUsers() = generateSequence(userLoader(null)) {
         it.paginationToken()?.let(userLoader)
     }.flatMap {
@@ -45,22 +49,23 @@ class UserPoolService(
             owner = it.hasAttributeSetToTrue(OWNER_ATTRIBUTE),
             loginEnabled = it.enabled()
         )
-    }.toList()
+    }.sortedWith(
+        compareBy({ it.owner }, { it.emailAddress })
+    ).toList()
 
     fun listAllUsersWithEmailEnabled() = listAllUsers()
         .filter {
             it.emailEnabled
         }
 
-    private fun getOwner() = listAllUsers()
-        .first {
-            it.owner
-        }
-
     fun createUser(email: String) {
+        val username = UUID.randomUUID().toString()
         cognitoClient.adminCreateUser(
             AdminCreateUserRequest.builder()
                 .userPoolId(userPoolId)
+                .desiredDeliveryMediums(DeliveryMediumType.EMAIL)
+                .username(username)
+                .messageAction(MessageActionType.SUPPRESS)
                 .userAttributes(
                     AttributeType.builder()
                         .name(EMAIL_ATTRIBUTE)
@@ -76,18 +81,47 @@ class UserPoolService(
                         .build()
                 ).build()
         )
+
+        enableOrDisableUser(username, false)
     }
 
+    fun toggleUserAttribute(username: String, attribute: String, newValue: String) {
+        val boolValue =
+            newValue.toBooleanStrictOrNull() ?: throw DisplayException("Invalid user attribute value $newValue")
 
-    fun enableOrDisableUser(username: String, enabled: Boolean) {
-        val owner = getOwner()
-        if (owner.username == username) {
-            throw DisplayException("Can not disable ${owner.emailAddress}")
+        when (attribute) {
+            "email" -> enableOrDisableEmail(username, boolValue)
+            "login" -> enableOrDisableUser(username, boolValue)
+            else -> throw DisplayException("Invalid attribute $attribute")
         }
+    }
+
+    private fun enableOrDisableEmail(username: String, enabled: Boolean) {
+        cognitoClient.adminUpdateUserAttributes(
+            AdminUpdateUserAttributesRequest.builder()
+                .userPoolId(userPoolId)
+                .username(username)
+                .userAttributes(
+                    AttributeType.builder()
+                        .name(EMAIL_ENABLED_ATTRIBUTE)
+                        .value(enabled.toString())
+                        .build()
+                ).build()
+        )
+    }
+
+    private fun enableOrDisableUser(username: String, enabled: Boolean) {
+        denyIfOwner(username)
 
         if (enabled) {
             cognitoClient.adminEnableUser(
                 AdminEnableUserRequest.builder()
+                    .userPoolId(userPoolId)
+                    .username(username)
+                    .build()
+            )
+            cognitoClient.adminResetUserPassword(
+                AdminResetUserPasswordRequest.builder()
                     .userPoolId(userPoolId)
                     .username(username)
                     .build()
@@ -102,31 +136,30 @@ class UserPoolService(
         }
     }
 
-    fun enableOrDisableEmail(username: String, enabled: Boolean) {
-        cognitoClient.adminUpdateUserAttributes(
-            AdminUpdateUserAttributesRequest.builder()
-                .userPoolId(userPoolId)
-                .username(username)
-                .userAttributes(
-                    AttributeType.builder()
-                        .name(EMAIL_ENABLED_ATTRIBUTE)
-                        .value(enabled.toString())
-                        .build()
-                ).build()
-        )
-    }
-
     fun deleteUser(username: String) {
-        val owner = getOwner()
-        if (owner.username == username) {
-            throw DisplayException("Can not delete ${owner.emailAddress}")
-        }
+        denyIfOwner(username)
 
         cognitoClient.adminDeleteUser(
             AdminDeleteUserRequest.builder()
                 .username(username)
                 .build()
         )
+    }
+
+    private fun denyIfOwner(username: String) {
+        val user = cognitoClient.adminGetUser(
+            AdminGetUserRequest.builder()
+                .userPoolId(userPoolId)
+                .username(username)
+                .build()
+        )
+
+        if (user.userAttributes().any {
+                it.name() == OWNER_ATTRIBUTE && it.value().toBooleanStrictOrNull() == true
+            }
+        ) {
+            throw DisplayException("Can not modify user")
+        }
     }
 
     private fun UserType.emailAddress() = attributes().first {

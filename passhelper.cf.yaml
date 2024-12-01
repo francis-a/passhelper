@@ -355,6 +355,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
+                  - cognito-idp:AdminGetUser
                   - cognito-idp:ListUsers
                   - cognito-idp:AdminDisableUser
                   - cognito-idp:AdminEnableUser

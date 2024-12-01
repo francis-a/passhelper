@@ -1,7 +1,7 @@
 package io.eyecu.passhelper.web
 
 import com.fasterxml.jackson.module.kotlin.convertValue
-import io.eyecu.passhelper.models.AddNotificationEndpointForm
+import io.eyecu.passhelper.models.AddUserForm
 import io.eyecu.passhelper.service.NotificationEndpointService
 import io.eyecu.passhelper.util.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -12,36 +12,36 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.thymeleaf.context.Context
 
-class GetNotificationEndpointsTest {
+class GetUsersTest {
 
     private val notificationEndpointService = mock<NotificationEndpointService>()
-    private val getNotificationEndpointsRoute = GetNotificationEndpoints(notificationEndpointService, mock())
+    private val getUsersRoute = GetUsers(mock())
 
     @Test
     fun `should route correctly`() {
-        assertEquals("GET /notification-endpoints", getNotificationEndpointsRoute.route)
+        assertEquals("GET /notification-endpoints", getUsersRoute.route)
     }
 
     @Test
     fun `should use notification endpoints template`() {
-        assertEquals("notification-endpoints", getNotificationEndpointsRoute.template.templateName)
+        assertEquals("notification-endpoints", getUsersRoute.template.templateName)
     }
 
 }
 
-class PostNotificationEndpointsTest {
+class PostUserTest {
 
     private val notificationEndpointService = mock<NotificationEndpointService>()
-    private val postNotificationEndpointsRoute = PostNotificationEndpoints(notificationEndpointService, mock())
+    private val postUserRoute = PostUser(mock())
 
     @Test
     fun `should route correctly`() {
-        assertEquals("POST /notification-endpoints", postNotificationEndpointsRoute.route)
+        assertEquals("POST /notification-endpoints", postUserRoute.route)
     }
 
     @Test
     fun `should redirect to index after handling request`() {
-        assertEquals(GetIndex::class, (postNotificationEndpointsRoute.template as Template.Redirect<*>).redirectRoute)
+        assertEquals(GetIndex::class, (postUserRoute.template as Template.Redirect<*>).redirectRoute)
     }
 
     @Test
@@ -57,21 +57,21 @@ class PostNotificationEndpointsTest {
         val context = Context()
         val responseModifier = ResponseModifier()
 
-        val addEndpointForm = jacksonObjectMapper.convertValue<AddNotificationEndpointForm>(formData)
+        val addEndpointForm = jacksonObjectMapper.convertValue<AddUserForm>(formData)
 
-        postNotificationEndpointsRoute.handle(request, context, responseModifier)
+        postUserRoute.handle(request, context, responseModifier)
 
         verify(notificationEndpointService).addEmail(addEndpointForm.email!!)
         assertNotNull(context.getVariable("addNotificationEndpointForm"))
-        assertTrue(context.getVariable("addNotificationEndpointForm") is AddNotificationEndpointForm)
+        assertTrue(context.getVariable("addNotificationEndpointForm") is AddUserForm)
     }
 
 }
 
-class DeleteNotificationEndpointTest {
+class DeleteUserTest {
 
     private val notificationEndpointService = mock<NotificationEndpointService>()
-    private val deleteNotificationEndpointRoute = DeleteNotificationEndpoint(notificationEndpointService, mock())
+    private val deleteNotificationEndpointRoute = DeleteUser(mock())
 
     @Test
     fun `should route correctly`() {
@@ -81,7 +81,7 @@ class DeleteNotificationEndpointTest {
     @Test
     fun `should redirect to notification endpoints after handling request`() {
         assertEquals(
-            GetNotificationEndpoints::class,
+            GetUsers::class,
             (deleteNotificationEndpointRoute.template as Template.Redirect<*>).redirectRoute
         )
     }
