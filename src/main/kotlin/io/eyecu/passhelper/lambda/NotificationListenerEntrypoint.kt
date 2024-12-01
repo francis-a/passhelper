@@ -4,13 +4,13 @@ import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent.DynamodbStreamRecord
-import io.eyecu.passhelper.LambdaNotificationEndpointServiceProvider
-import io.eyecu.passhelper.NotificationEndpointServiceProvider
+import io.eyecu.passhelper.LambdaNotificationEndpointServiceServiceProvider
+import io.eyecu.passhelper.NotificationServiceProvider
 import io.eyecu.passhelper.repository.PartitionKey
 import io.eyecu.passhelper.repository.SortKey
 
 class NotificationListenerEntrypoint(
-    notificationEndpointServiceProvider: NotificationEndpointServiceProvider = LambdaNotificationEndpointServiceProvider
+    notificationEndpointServiceProvider: NotificationServiceProvider = LambdaNotificationEndpointServiceServiceProvider
 ) : RequestHandler<DynamodbEvent, String> {
 
     private val notificationService = notificationEndpointServiceProvider.notificationService

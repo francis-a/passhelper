@@ -39,7 +39,7 @@ class Router(
                 GetLogoutRoute::class to GetLogoutRoute(apiGatewayServiceProvider.domainName),
                 // app routes
                 GetRoot::class to GetRoot(),
-                GetIndex::class to GetIndex(passportService, notificationEndpointService),
+                GetIndex::class to GetIndex(passportService, userPoolService),
                 PostAdd::class to PostAdd(passportService),
                 GetAdd::class to GetAdd(),
                 GetEdit::class to GetEdit(passportService),

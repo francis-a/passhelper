@@ -2,7 +2,7 @@ package io.eyecu.passhelper.web
 
 import com.fasterxml.jackson.module.kotlin.convertValue
 import io.eyecu.passhelper.models.AddUserForm
-import io.eyecu.passhelper.service.NotificationEndpointService
+import io.eyecu.passhelper.service.UserPoolService
 import io.eyecu.passhelper.util.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -14,29 +14,28 @@ import org.thymeleaf.context.Context
 
 class GetUsersTest {
 
-    private val notificationEndpointService = mock<NotificationEndpointService>()
     private val getUsersRoute = GetUsers(mock())
 
     @Test
     fun `should route correctly`() {
-        assertEquals("GET /notification-endpoints", getUsersRoute.route)
+        assertEquals("GET /users", getUsersRoute.route)
     }
 
     @Test
     fun `should use notification endpoints template`() {
-        assertEquals("notification-endpoints", getUsersRoute.template.templateName)
+        assertEquals("users", getUsersRoute.template.templateName)
     }
 
 }
 
 class PostUserTest {
 
-    private val notificationEndpointService = mock<NotificationEndpointService>()
+    private val userPoolService = mock<UserPoolService>()
     private val postUserRoute = PostUser(mock())
 
     @Test
     fun `should route correctly`() {
-        assertEquals("POST /notification-endpoints", postUserRoute.route)
+        assertEquals("POST /users", postUserRoute.route)
     }
 
     @Test
@@ -61,7 +60,7 @@ class PostUserTest {
 
         postUserRoute.handle(request, context, responseModifier)
 
-        verify(notificationEndpointService).addEmail(addEndpointForm.email!!)
+        verify(userPoolService).createUser(addEndpointForm.email!!)
         assertNotNull(context.getVariable("addNotificationEndpointForm"))
         assertTrue(context.getVariable("addNotificationEndpointForm") is AddUserForm)
     }
@@ -70,12 +69,12 @@ class PostUserTest {
 
 class DeleteUserTest {
 
-    private val notificationEndpointService = mock<NotificationEndpointService>()
+    private val userPoolService = mock<UserPoolService>()
     private val deleteNotificationEndpointRoute = DeleteUser(mock())
 
     @Test
     fun `should route correctly`() {
-        assertEquals("DELETE /notification-endpoints/{id}", deleteNotificationEndpointRoute.route)
+        assertEquals("DELETE /users/{username}", deleteNotificationEndpointRoute.route)
     }
 
     @Test
@@ -91,13 +90,13 @@ class DeleteUserTest {
         val request = Request(
             body = emptyMap(),
             queryParameters = emptyMap(),
-            pathParameters = mapOf("id" to "123")
+            pathParameters = mapOf("username" to "123")
         )
         val context = Context()
         val responseModifier = ResponseModifier()
 
         deleteNotificationEndpointRoute.handle(request, context, responseModifier)
 
-        verify(notificationEndpointService).deleteEmail("123")
+        verify(userPoolService).deleteUser("123")
     }
 }

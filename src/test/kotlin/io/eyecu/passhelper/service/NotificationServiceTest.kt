@@ -1,9 +1,10 @@
-import io.eyecu.passhelper.repository.NotificationEndpointRepository
+import io.eyecu.passhelper.models.UserView
 import io.eyecu.passhelper.repository.PartitionKey
 import io.eyecu.passhelper.repository.PassportRepository
 import io.eyecu.passhelper.repository.PassportRepository.Passport
 import io.eyecu.passhelper.repository.SortKey
 import io.eyecu.passhelper.service.NotificationService
+import io.eyecu.passhelper.service.UserPoolService
 import io.eyecu.passhelper.util.toTimestamp
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -22,14 +23,14 @@ import java.time.LocalDate
 class NotificationServiceTest {
 
     private val sesClient = mock<SesClient>()
-    private val notificationEndpointRepository = mock<NotificationEndpointRepository>()
+    private val userPoolService = mock<UserPoolService>()
     private val passportRepository = mock<PassportRepository>()
 
     private val domain = "example.com"
     private val emailName = "noreply"
     private val notificationService = NotificationService(
         sesClient,
-        notificationEndpointRepository,
+        userPoolService,
         passportRepository,
         domain,
         emailName
@@ -40,10 +41,10 @@ class NotificationServiceTest {
         val partitionKey = PartitionKey("passport123")
         val sortKey = SortKey("range1")
         val passport = createPassport()
-        val emails = listOf("test1@example.com", "test2@example.com")
+        val emails = createEmails("test1@example.com", "test2@example.com")
 
         whenever(passportRepository.find(partitionKey, sortKey)).thenReturn(passport)
-        whenever(notificationEndpointRepository.findAllEmails()).thenReturn(emails)
+        whenever(userPoolService.listAllUsersWithEmailEnabled()).thenReturn(emails)
 
         notificationService.send(partitionKey, sortKey)
 
@@ -69,7 +70,7 @@ class NotificationServiceTest {
         val passport = createPassport()
 
         whenever(passportRepository.find(partitionKey, sortKey)).thenReturn(passport)
-        whenever(notificationEndpointRepository.findAllEmails()).thenReturn(emptyList())
+        whenever(userPoolService.listAllUsersWithEmailEnabled()).thenReturn(emptyList())
 
         notificationService.send(partitionKey, sortKey)
 
@@ -81,10 +82,10 @@ class NotificationServiceTest {
         val partitionKey = PartitionKey("passport123")
         val sortKey = SortKey("range1")
         val passport = createPassport()
-        val emails = listOf("test@example.com")
+        val emails = createEmails("test@example.com")
 
         whenever(passportRepository.find(partitionKey, sortKey)).thenReturn(passport)
-        whenever(notificationEndpointRepository.findAllEmails()).thenReturn(emails)
+        whenever(userPoolService.listAllUsersWithEmailEnabled()).thenReturn(emails)
 
         notificationService.send(partitionKey, sortKey)
 
@@ -93,6 +94,16 @@ class NotificationServiceTest {
             assertEquals("test@example.com", firstValue.destination().toAddresses()[0])
             assertTrue(firstValue.message().subject().data().contains("It's time to renew your passport John!"))
         }
+    }
+
+    private fun createEmails(vararg addresses: String) = addresses.map {
+        UserView(
+            username = it,
+            emailAddress = it,
+            emailEnabled = true,
+            owner = false,
+            loginEnabled = false
+        )
     }
 
     private fun createPassport(

@@ -1,11 +1,9 @@
 package io.eyecu.passhelper
 
-import io.eyecu.passhelper.repository.NotificationEndpointRepository
 import io.eyecu.passhelper.repository.PassportNotificationRepository
 import io.eyecu.passhelper.repository.PassportRepository
 import io.eyecu.passhelper.service.CalenderService
 import io.eyecu.passhelper.service.CognitoService
-import io.eyecu.passhelper.service.NotificationEndpointService
 import io.eyecu.passhelper.service.PassportService
 import io.eyecu.passhelper.service.UserPoolService
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
@@ -16,7 +14,6 @@ import java.lang.System.getenv
 
 interface ApiGatewayServiceProvider {
     val passportService: PassportService
-    val notificationEndpointService: NotificationEndpointService
     val userPoolService: UserPoolService
     val cognitoService: CognitoService
     val calenderService: CalenderService
@@ -27,7 +24,6 @@ object LambdaApiGatewayServiceProvider : ApiGatewayServiceProvider {
 
     private val passportTableName: String = getenv("PASSPORT_TABLE_NAME")
     private val notificationTableName: String = getenv("PASSPORT_NOTIFICATIONS_TABLE_NAME")
-    private val notificationEndpointTableName: String = getenv("NOTIFICATION_ENDPOINT_TABLE_NAME")
     private val cognitoClientId: String = getenv("COGNITO_CLIENT_ID")
     private val cognitoClientSecret: String = getenv("COGNITO_CLIENT_SECRET")
     private val cognitoUserPoolId: String = getenv("COGNITO_USER_POOL_ID")
@@ -46,11 +42,6 @@ object LambdaApiGatewayServiceProvider : ApiGatewayServiceProvider {
         PassportService(
             PassportRepository(passportTableName, dynamodbClient),
             PassportNotificationRepository(notificationTableName, dynamodbClient)
-        )
-
-    override val notificationEndpointService =
-        NotificationEndpointService(
-            NotificationEndpointRepository(notificationEndpointTableName, dynamodbClient)
         )
 
     override val cognitoService =

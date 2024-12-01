@@ -6,7 +6,7 @@ import com.amazonaws.services.lambda.runtime.events.DynamodbEvent.DynamodbStream
 import com.amazonaws.services.lambda.runtime.events.models.dynamodb.AttributeValue
 import com.amazonaws.services.lambda.runtime.events.models.dynamodb.Identity
 import com.amazonaws.services.lambda.runtime.events.models.dynamodb.StreamRecord
-import io.eyecu.passhelper.NotificationEndpointServiceProvider
+import io.eyecu.passhelper.NotificationServiceProvider
 import io.eyecu.passhelper.repository.PartitionKey
 import io.eyecu.passhelper.repository.SortKey
 import io.eyecu.passhelper.service.NotificationService
@@ -26,7 +26,7 @@ class NotificationListenerEntrypointTest {
 
     @BeforeEach
     fun before() {
-        service = NotificationListenerEntrypoint(object : NotificationEndpointServiceProvider {
+        service = NotificationListenerEntrypoint(object : NotificationServiceProvider {
             override val notificationService =
                 this@NotificationListenerEntrypointTest.notificationService
         })

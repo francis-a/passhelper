@@ -2,7 +2,6 @@ package io.eyecu.passhelper.service
 
 import io.eyecu.passhelper.models.ExpiringPassportEmailView
 import io.eyecu.passhelper.models.countryCodeToCountryName
-import io.eyecu.passhelper.repository.NotificationEndpointRepository
 import io.eyecu.passhelper.repository.PartitionKey
 import io.eyecu.passhelper.repository.PassportRepository
 import io.eyecu.passhelper.repository.PassportRepository.Passport
@@ -17,7 +16,7 @@ import software.amazon.awssdk.services.ses.model.SendEmailRequest
 
 class NotificationService(
     private val sesClient: SesClient,
-    private val notificationEndpointRepository: NotificationEndpointRepository,
+    private val userPoolService: UserPoolService,
     private val passportRepository: PassportRepository,
     private val domain: String,
     emailName: String
@@ -27,7 +26,7 @@ class NotificationService(
 
     fun send(partitionKey: PartitionKey, sortKey: SortKey) {
         val passport = passportRepository.find(partitionKey, sortKey) ?: return
-        val emails = notificationEndpointRepository.findAllEmails()
+        val emails = userPoolService.listAllUsersWithEmailEnabled().map { it.emailAddress }
         emails.forEach {
             sesClient.sendEmail(passport.sendRequestForEmail(it))
         }
