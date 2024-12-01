@@ -20,6 +20,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminEnable
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminResetUserPasswordRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminSetUserPasswordRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest
@@ -182,7 +183,7 @@ class UserPoolServiceTest {
         userPoolService.toggleUserAttribute("user@example.com", "login", "true")
 
         verify(cognitoClient).adminEnableUser(any<AdminEnableUserRequest>())
-        verify(cognitoClient).adminResetUserPassword(any<AdminResetUserPasswordRequest>())
+        verify(cognitoClient).adminSetUserPassword(any<AdminSetUserPasswordRequest>())
     }
 
     @Test

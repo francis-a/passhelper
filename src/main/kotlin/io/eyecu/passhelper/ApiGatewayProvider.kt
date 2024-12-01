@@ -64,6 +64,6 @@ object LambdaApiGatewayServiceProvider : ApiGatewayServiceProvider {
     override val userPoolService =
         UserPoolService(
             CognitoIdentityProviderClient.builder().build(),
-            cognitoUserPoolId
+            userPoolId = cognitoUserPoolId
         )
 }

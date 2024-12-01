@@ -8,7 +8,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDelete
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDisableUserRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminEnableUserRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserRequest
-import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminResetUserPasswordRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminSetUserPasswordRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.DeliveryMediumType
@@ -120,10 +120,14 @@ class UserPoolService(
                     .build()
             )
 
-            cognitoClient.adminResetUserPassword(
-                AdminResetUserPasswordRequest.builder()
+            val newPassword = generateRandomPassword()
+
+            cognitoClient.adminSetUserPassword(
+                AdminSetUserPasswordRequest.builder()
                     .userPoolId(userPoolId)
                     .username(username)
+                    .permanent(false)
+                    .password(newPassword)
                     .build()
             )
         } else {
@@ -134,6 +138,26 @@ class UserPoolService(
                     .build()
             )
         }
+    }
+
+    private fun generateRandomPassword(length: Int = 14): String {
+        val upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        val lowerCase = "abcdefghijklmnopqrstuvwxyz"
+        val digits = "0123456789"
+        val specialChars = "!@#\$%^&*()-_=+[]{}|;:'\",.<>?/`~"
+
+        val allChars = upperCase + lowerCase + digits + specialChars
+
+        val mandatory = listOf(
+            upperCase.random(),
+            lowerCase.random(),
+            digits.random(),
+            specialChars.random()
+        )
+
+        val remaining = List(length - mandatory.size) { allChars.random() }
+
+        return (mandatory + remaining).shuffled().joinToString("")
     }
 
     fun deleteUser(username: String) {

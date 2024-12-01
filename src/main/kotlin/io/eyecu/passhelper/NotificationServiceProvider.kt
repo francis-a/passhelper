@@ -30,7 +30,7 @@ object LambdaNotificationEndpointServiceServiceProvider : NotificationServicePro
         sesClient = sesClient,
         userPoolService = UserPoolService(
             CognitoIdentityProviderClient.builder().build(),
-            cognitoUserPoolId
+            userPoolId = cognitoUserPoolId
         ),
         passportRepository = PassportRepository(
             tableName = passportTableName,

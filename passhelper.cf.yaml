@@ -361,7 +361,7 @@ Resources:
                   - cognito-idp:UpdateUserAttributes
                   - cognito-idp:AdminCreateUser
                   - cognito-idp:AdminDeleteUser
-                  - cognito-idp:AdminResetUserPassword
+                  - cognito-idp:AdminSetUserPassword
                 Resource:
                   - !GetAtt UserPool.Arn
 
