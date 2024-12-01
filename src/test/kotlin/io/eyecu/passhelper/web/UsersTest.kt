@@ -64,8 +64,8 @@ class PostUserTest {
         postUserRoute.handle(request, context, responseModifier)
 
         verify(userPoolService).createUser(addEndpointForm.email!!)
-        assertNotNull(context.getVariable("addNotificationEndpointForm"))
-        assertTrue(context.getVariable("addNotificationEndpointForm") is AddUserForm)
+        assertNotNull(context.getVariable("addNewUserForm"))
+        assertTrue(context.getVariable("addNewUserForm") is AddUserForm)
     }
 
 }
@@ -101,6 +101,8 @@ class DeleteUserTest {
         deleteUser.handle(request, context, responseModifier)
 
         verify(userPoolService).deleteUser("123")
+        assertNotNull(context.getVariable("addNewUserForm"))
+        assertTrue(context.getVariable("addNewUserForm") is AddUserForm)
     }
 }
 
@@ -138,6 +140,8 @@ class PatchUserAttributeValueTest {
         patchUser.handle(request, context, responseModifier)
 
         verify(userPoolService).toggleUserAttribute("123", "test", "new value")
+        assertNotNull(context.getVariable("addNewUserForm"))
+        assertTrue(context.getVariable("addNewUserForm") is AddUserForm)
     }
 
 }
