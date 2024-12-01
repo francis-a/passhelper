@@ -118,7 +118,7 @@
                                                     </tr>
                                                     </tbody>
                                                 </table>
-                                    <p style="line-height: 24px; font-size: 16px; width: 100%; margin-top: 12px;" align="center">➡️ See your passport overview at <a th:href="${expiringPassport.url}"><th:block th:text="${expiringPassport.url}"></th:block></a></p>
+                                    <p style="line-height: 24px; font-size: 16px; width: 100%; margin-top: 12px;" align="center">➡️ See your passport overview at <a style="color: #2d3748;" th:href="${expiringPassport.url}"><th:block th:text="${expiringPassport.url}"></th:block></a></p>
 
                                                 <div class="preview" style="display: none; max-height: 0px; overflow: hidden;">
                                                     The passport issued to <th:block th:text="${expiringPassport.fullName}">F A</th:block> by <th:block th:text="${expiringPassport.countryName}">Country</th:block> is set to expire on <th:block th:text="${#temporals.format(expiringPassport.expiresDate, 'MMMM dd, yyyy')}">1/23/45</th:block>&#847;

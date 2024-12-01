@@ -68,14 +68,14 @@ class PassportService(
 
     private fun savePassportNotification(passportId: String, expiresTimestamp: Long) {
         val notificationTime = notificationDate(expiresTimestamp)
-//        if (notificationTime.isBefore(LocalDate.now(UTC))) {
-//            passportNotificationRepository.delete(passportId)
-//        } else {
+        if (notificationTime.isBefore(LocalDate.now(UTC))) {
+            passportNotificationRepository.delete(passportId)
+        } else {
             passportNotificationRepository.put(
                 passportId = passportId,
                 notificationTime = notificationTime
             )
-//        }
+        }
     }
 
     private fun notificationDate(expiresTimestamp: Long): LocalDate =
