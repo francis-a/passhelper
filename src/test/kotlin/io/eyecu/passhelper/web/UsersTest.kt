@@ -31,7 +31,7 @@ class GetUsersTest {
 class PostUserTest {
 
     private val userPoolService = mock<UserPoolService>()
-    private val postUserRoute = PostUser(mock())
+    private val postUserRoute = PostUser(userPoolService)
 
     @Test
     fun `should route correctly`() {
@@ -39,12 +39,15 @@ class PostUserTest {
     }
 
     @Test
-    fun `should redirect to index after handling request`() {
-        assertEquals(GetIndex::class, (postUserRoute.template as Template.Redirect<*>).redirectRoute)
+    fun `should redirect to user endpoint after handling request`() {
+        assertEquals(
+            GetUsers::class,
+            (postUserRoute.template as Template.Redirect<*>).redirectRoute
+        )
     }
 
     @Test
-    fun `should add email to notification service`() {
+    fun `should add email to user pool service`() {
         val formData = mapOf(
             "email" to "new@example.com"
         )
@@ -70,23 +73,23 @@ class PostUserTest {
 class DeleteUserTest {
 
     private val userPoolService = mock<UserPoolService>()
-    private val deleteNotificationEndpointRoute = DeleteUser(mock())
+    private val deleteUser = DeleteUser(userPoolService)
 
     @Test
     fun `should route correctly`() {
-        assertEquals("DELETE /users/{username}", deleteNotificationEndpointRoute.route)
+        assertEquals("DELETE /users/{username}", deleteUser.route)
     }
 
     @Test
-    fun `should redirect to notification endpoints after handling request`() {
+    fun `should redirect to user endpoint after handling request`() {
         assertEquals(
             GetUsers::class,
-            (deleteNotificationEndpointRoute.template as Template.Redirect<*>).redirectRoute
+            (deleteUser.template as Template.Redirect<*>).redirectRoute
         )
     }
 
     @Test
-    fun `should delete notification endpoint using notification service`() {
+    fun `should delete user using user pool service`() {
         val request = Request(
             body = emptyMap(),
             queryParameters = emptyMap(),
@@ -95,8 +98,46 @@ class DeleteUserTest {
         val context = Context()
         val responseModifier = ResponseModifier()
 
-        deleteNotificationEndpointRoute.handle(request, context, responseModifier)
+        deleteUser.handle(request, context, responseModifier)
 
         verify(userPoolService).deleteUser("123")
     }
+}
+
+class PatchUserAttributeValueTest {
+    private val userPoolService = mock<UserPoolService>()
+    private val patchUser = PatchUserAttributeValue(userPoolService)
+
+    @Test
+    fun `should route correctly`() {
+        assertEquals("PATCH /users/{username}/attributes/{attribute}/value/{value}", patchUser.route)
+    }
+
+    @Test
+    fun `should redirect to user endpoint after handling request`() {
+        assertEquals(
+            GetUsers::class,
+            (patchUser.template as Template.Redirect<*>).redirectRoute
+        )
+    }
+
+    @Test
+    fun `should patch user attribute using user pool service`() {
+        val request = Request(
+            body = emptyMap(),
+            queryParameters = emptyMap(),
+            pathParameters = mapOf(
+                "username" to "123",
+                "attribute" to "test",
+                "value" to "new value"
+            )
+        )
+        val context = Context()
+        val responseModifier = ResponseModifier()
+
+        patchUser.handle(request, context, responseModifier)
+
+        verify(userPoolService).toggleUserAttribute("123", "test", "new value")
+    }
+
 }
