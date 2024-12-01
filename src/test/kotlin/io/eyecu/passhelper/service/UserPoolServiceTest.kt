@@ -31,9 +31,15 @@ import java.time.Instant
 class UserPoolServiceTest {
 
     private val cognitoClient = mock<CognitoIdentityProviderClient>()
+    private val emailService = mock<EmailService>()
     private val userPoolId = "test-pool"
 
-    private val userPoolService = UserPoolService(cognitoClient, userPoolId)
+    private val userPoolService = UserPoolService(
+        emailService = emailService,
+        cognitoClient = cognitoClient,
+        userPoolId = userPoolId,
+        domainName = "example.com"
+    )
 
     @Test
     fun `should list all users`() {

@@ -8,6 +8,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDelete
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminDisableUserRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminEnableUserRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserRequest
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminSetUserPasswordRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
@@ -17,8 +18,10 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.MessageActi
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType
 
 class UserPoolService(
+    private val emailService: EmailService,
     private val cognitoClient: CognitoIdentityProviderClient,
-    private val userPoolId: String
+    private val userPoolId: String,
+    private val domainName: String
 ) {
 
     companion object {
@@ -110,7 +113,7 @@ class UserPoolService(
     }
 
     private fun enableOrDisableUser(username: String, enabled: Boolean) {
-        denyIfOwner(username)
+        val user = denyIfOwner(username)
 
         if (enabled) {
             cognitoClient.adminEnableUser(
@@ -129,6 +132,17 @@ class UserPoolService(
                     .permanent(false)
                     .password(newPassword)
                     .build()
+            )
+
+            emailService.sendEmail(
+                to = user.userAttributes().emailAddress(),
+                template = "emails/reset",
+                source = "Reset Password",
+                subject = "PassHelper Temporary Password",
+                content = mapOf(
+                    "temporaryPassword" to newPassword,
+                    "loginUrl" to domainName
+                )
             )
         } else {
             cognitoClient.adminDisableUser(
@@ -171,7 +185,7 @@ class UserPoolService(
         )
     }
 
-    private fun denyIfOwner(username: String) {
+    private fun denyIfOwner(username: String): AdminGetUserResponse {
         val user = cognitoClient.adminGetUser(
             AdminGetUserRequest.builder()
                 .userPoolId(userPoolId)
@@ -184,10 +198,14 @@ class UserPoolService(
             }
         ) {
             throw DisplayException("Can not modify user")
+        } else {
+            return user
         }
     }
 
-    private fun UserType.emailAddress() = attributes().first {
+    private fun UserType.emailAddress() = attributes().emailAddress()
+
+    private fun List<AttributeType>.emailAddress() = first {
         it.name() == "email"
     }.value()
 

@@ -1,6 +1,7 @@
 package io.eyecu.passhelper
 
 import io.eyecu.passhelper.repository.PassportRepository
+import io.eyecu.passhelper.service.EmailService
 import io.eyecu.passhelper.service.NotificationService
 import io.eyecu.passhelper.service.UserPoolService
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
@@ -15,9 +16,9 @@ interface NotificationServiceProvider {
 
 object LambdaNotificationEndpointServiceServiceProvider : NotificationServiceProvider {
     private val cognitoUserPoolId: String = getenv("COGNITO_USER_POOL_ID")
-    private val passportTableName = System.getenv("PASSPORT_TABLE_NAME")
-    private val emailDomain = System.getenv("EMAIL_DOMAIN")
-    private val emailName = System.getenv("EMAIL_NAME")
+    private val passportTableName = getenv("PASSPORT_TABLE_NAME")
+    private val emailDomain = getenv("EMAIL_DOMAIN")
+    private val emailName = getenv("EMAIL_NAME")
 
     private val dynamoDbClient: DynamoDbEnhancedClient = DynamoDbEnhancedClient
         .builder()
@@ -26,17 +27,24 @@ object LambdaNotificationEndpointServiceServiceProvider : NotificationServicePro
 
     private val sesClient: SesClient = SesClient.builder().build()
 
-    override val notificationService = NotificationService(
+    private val emailService = EmailService(
         sesClient = sesClient,
+        emailName = emailName,
+        domain = emailDomain
+    )
+
+    override val notificationService = NotificationService(
+        emailService = emailService,
         userPoolService = UserPoolService(
-            CognitoIdentityProviderClient.builder().build(),
-            userPoolId = cognitoUserPoolId
+            emailService = emailService,
+            cognitoClient = CognitoIdentityProviderClient.builder().build(),
+            userPoolId = cognitoUserPoolId,
+            domainName = emailDomain
         ),
         passportRepository = PassportRepository(
             tableName = passportTableName,
             client = dynamoDbClient
         ),
-        domain = emailDomain,
-        emailName = emailName
+        domain = emailDomain
     )
 }

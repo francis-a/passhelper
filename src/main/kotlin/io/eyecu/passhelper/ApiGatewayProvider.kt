@@ -4,12 +4,14 @@ import io.eyecu.passhelper.repository.PassportNotificationRepository
 import io.eyecu.passhelper.repository.PassportRepository
 import io.eyecu.passhelper.service.CalenderService
 import io.eyecu.passhelper.service.CognitoService
+import io.eyecu.passhelper.service.EmailService
 import io.eyecu.passhelper.service.PassportService
 import io.eyecu.passhelper.service.UserPoolService
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.ses.SesClient
 import java.lang.System.getenv
 
 interface ApiGatewayServiceProvider {
@@ -63,7 +65,13 @@ object LambdaApiGatewayServiceProvider : ApiGatewayServiceProvider {
 
     override val userPoolService =
         UserPoolService(
-            CognitoIdentityProviderClient.builder().build(),
-            userPoolId = cognitoUserPoolId
+            emailService = EmailService(
+                sesClient = SesClient.create(),
+                emailName = "reset",
+                domain = domainName,
+            ),
+            cognitoClient = CognitoIdentityProviderClient.builder().build(),
+            userPoolId = cognitoUserPoolId,
+            domainName = domainName
         )
 }
