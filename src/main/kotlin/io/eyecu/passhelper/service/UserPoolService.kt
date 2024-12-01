@@ -40,17 +40,18 @@ class UserPoolService(
         it.paginationToken()?.let(userLoader)
     }.flatMap {
         it.users()
-    }.sortedByDescending {
-        it.userCreateDate()
-    }.map {
-        UserView(
-            username = it.username(),
-            emailAddress = it.emailAddress(),
-            emailEnabled = it.hasAttributeSetToTrue(EMAIL_ENABLED_ATTRIBUTE),
-            owner = it.hasAttributeSetToTrue(OWNER_ATTRIBUTE),
-            loginEnabled = it.enabled()
-        )
     }.toList()
+        .sortedBy {
+            it.userCreateDate().toEpochMilli()
+        }.map {
+            UserView(
+                username = it.username(),
+                emailAddress = it.emailAddress(),
+                emailEnabled = it.hasAttributeSetToTrue(EMAIL_ENABLED_ATTRIBUTE),
+                owner = it.hasAttributeSetToTrue(OWNER_ATTRIBUTE),
+                loginEnabled = it.enabled()
+            )
+        }
 
     fun listAllUsersWithEmailEnabled() = listAllUsers()
         .filter {
