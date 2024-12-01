@@ -152,5 +152,10 @@ See more here: https://docs.aws.amazon.com/ses/latest/dg/verify-addresses-and-do
 
 AWS Cognito provides both authentication and user management.
 The email address entered when standing up the application is used to create an initial user in the Cognito user pool.
-Adding, removing, and managing users should be done directly in Cognito.
+This user will be considered the application "owner" and
+cannot be disabled or removed in the app.
+
+New users can be added directly in the app. Once a user is added, it can be configured to receive reminder emails or granted access to log in to PassHelper.
+
+Adding, removing, and managing can also be done direclty in Cognito.
 See more here: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools.html

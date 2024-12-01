@@ -15,7 +15,6 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.DeliveryMed
 import software.amazon.awssdk.services.cognitoidentityprovider.model.ListUsersRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.MessageActionType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType
-import java.util.UUID
 
 class UserPoolService(
     private val cognitoClient: CognitoIdentityProviderClient,
@@ -41,6 +40,8 @@ class UserPoolService(
         it.paginationToken()?.let(userLoader)
     }.flatMap {
         it.users()
+    }.sortedByDescending {
+        it.userCreateDate()
     }.map {
         UserView(
             username = it.username(),
@@ -49,9 +50,7 @@ class UserPoolService(
             owner = it.hasAttributeSetToTrue(OWNER_ATTRIBUTE),
             loginEnabled = it.enabled()
         )
-    }.sortedWith(
-        compareBy({ it.owner }, { it.emailAddress })
-    ).toList()
+    }.toList()
 
     fun listAllUsersWithEmailEnabled() = listAllUsers()
         .filter {
@@ -59,12 +58,11 @@ class UserPoolService(
         }
 
     fun createUser(email: String) {
-        val username = UUID.randomUUID().toString()
-        cognitoClient.adminCreateUser(
+        val result = cognitoClient.adminCreateUser(
             AdminCreateUserRequest.builder()
                 .userPoolId(userPoolId)
                 .desiredDeliveryMediums(DeliveryMediumType.EMAIL)
-                .username(username)
+                .username(email)
                 .messageAction(MessageActionType.SUPPRESS)
                 .userAttributes(
                     AttributeType.builder()
@@ -82,7 +80,7 @@ class UserPoolService(
                 ).build()
         )
 
-        enableOrDisableUser(username, false)
+        enableOrDisableUser(result.user().username(), false)
     }
 
     fun toggleUserAttribute(username: String, attribute: String, newValue: String) {
@@ -120,6 +118,7 @@ class UserPoolService(
                     .username(username)
                     .build()
             )
+
             cognitoClient.adminResetUserPassword(
                 AdminResetUserPasswordRequest.builder()
                     .userPoolId(userPoolId)
@@ -141,6 +140,7 @@ class UserPoolService(
 
         cognitoClient.adminDeleteUser(
             AdminDeleteUserRequest.builder()
+                .userPoolId(userPoolId)
                 .username(username)
                 .build()
         )
