@@ -86,23 +86,30 @@ Resources:
       RouteKey: 'GET /calender'
       Target: !Sub 'integrations/${Integration}'
 
-  GetNotificationEndpoints:
+  GetUsersRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref Api
-      RouteKey: 'GET /notification-endpoints'
+      RouteKey: 'GET /users'
       Target: !Sub 'integrations/${Integration}'
 
-  AddNotificationEndpoint:
+  AddUserRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref Api
-      RouteKey: 'POST /notification-endpoints'
+      RouteKey: 'POST /users'
       Target: !Sub 'integrations/${Integration}'
 
-  DeleteNotificationEndpoint:
+  DeleteUserRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref Api
-      RouteKey: 'DELETE /notification-endpoints/{id}'
+      RouteKey: 'DELETE /users/{username}'
+      Target: !Sub 'integrations/${Integration}'
+
+  PatchUserAttributeValueEndpoint:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'PATCH /users/{username}/attributes/{attribute}/value/{value}'
       Target: !Sub 'integrations/${Integration}'

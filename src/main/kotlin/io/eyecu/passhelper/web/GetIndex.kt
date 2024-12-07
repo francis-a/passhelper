@@ -1,10 +1,10 @@
 package io.eyecu.passhelper.web
 
-import io.eyecu.passhelper.models.NotificationEndpointView
 import io.eyecu.passhelper.models.PassportView
 import io.eyecu.passhelper.models.PassportsInYearView
-import io.eyecu.passhelper.service.NotificationEndpointService
+import io.eyecu.passhelper.models.UserView
 import io.eyecu.passhelper.service.PassportService
+import io.eyecu.passhelper.service.UserPoolService
 import io.eyecu.passhelper.web.Template.Redirect
 import io.eyecu.passhelper.web.Template.Static
 import org.thymeleaf.context.Context
@@ -17,7 +17,7 @@ class GetRoot : Route {
 
 class GetIndex(
     private val passportService: PassportService,
-    private val notificationEndpointService: NotificationEndpointService
+    private val userPoolService: UserPoolService
 ) : Route {
     override val route = "GET /index"
     override val template = Static("index")
@@ -26,11 +26,11 @@ class GetIndex(
         val passports = loadAllPassports()
             .groupedByExpirationYear()
             .sortedBy { it.expirationYear }
-        val notificationEndpoints = notificationEndpointService.findAllEmails()
+        val userEmails = userPoolService.listAllUsersWithEmailEnabled()
 
         context.addAllPassportsModel(passports)
-        context.addNotificationEndpointCount(notificationEndpoints)
-        context.addNotificationEndpoints(notificationEndpoints)
+        context.addEmailAddressCount(userEmails)
+        context.addUserEmailAddresses(userEmails)
     }
 
     private fun Context.addAllPassportsModel(passportsInYearView: List<PassportsInYearView>) {
@@ -38,12 +38,12 @@ class GetIndex(
         setVariable("passportCount", passportsInYearView.size)
     }
 
-    private fun Context.addNotificationEndpoints(notificationEndpoints: List<NotificationEndpointView>) {
-        setVariable("notificationEndpoints", notificationEndpoints.joinToString(separator = ", ") { it.email })
+    private fun Context.addUserEmailAddresses(notificationEndpoints: List<UserView>) {
+        setVariable("emailAddresses", notificationEndpoints.joinToString(separator = ", ") { it.emailAddress })
     }
 
-    private fun Context.addNotificationEndpointCount(notificationEndpoints: List<NotificationEndpointView>) {
-        setVariable("notificationEndpointCount", notificationEndpoints.size)
+    private fun Context.addEmailAddressCount(notificationEndpoints: List<UserView>) {
+        setVariable("emailAddressCount", notificationEndpoints.size)
     }
 
     private fun loadAllPassports() = passportService.findAll().sortedBy {

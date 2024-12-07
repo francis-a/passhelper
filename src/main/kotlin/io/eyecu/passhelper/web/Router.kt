@@ -39,15 +39,16 @@ class Router(
                 GetLogoutRoute::class to GetLogoutRoute(apiGatewayServiceProvider.domainName),
                 // app routes
                 GetRoot::class to GetRoot(),
-                GetIndex::class to GetIndex(passportService, notificationEndpointService),
+                GetIndex::class to GetIndex(passportService, userPoolService),
                 PostAdd::class to PostAdd(passportService),
                 GetAdd::class to GetAdd(),
                 GetEdit::class to GetEdit(passportService),
                 PostEdit::class to PostEdit(passportService),
                 DeleteEdit::class to DeleteEdit(passportService),
-                GetNotificationEndpoints::class to GetNotificationEndpoints(notificationEndpointService),
-                PostNotificationEndpoints::class to PostNotificationEndpoints(notificationEndpointService),
-                DeleteNotificationEndpoint::class to DeleteNotificationEndpoint(notificationEndpointService),
+                GetUsers::class to GetUsers(userPoolService),
+                PostUser::class to PostUser(userPoolService),
+                DeleteUser::class to DeleteUser(userPoolService),
+                PatchUserAttributeValue::class to PatchUserAttributeValue(userPoolService),
                 GetCalender::class to GetCalender(calenderService),
                 GetHealth::class to GetHealth()
             )

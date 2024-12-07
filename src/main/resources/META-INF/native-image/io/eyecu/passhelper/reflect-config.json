@@ -18,16 +18,7 @@
     "allPublicClasses": true
   },
   {
-    "name": "io.eyecu.passhelper.models.AddNotificationEndpointForm",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredClasses": true,
-    "allPublicClasses": true
-  },
-  {
-    "name": "io.eyecu.passhelper.models.NotificationEndpointView",
+    "name": "io.eyecu.passhelper.models.AddUserForm",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -127,6 +118,15 @@
   },
   {
     "name": "io.eyecu.passhelper.service.Jwt",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredClasses": true,
+    "allPublicClasses": true
+  },
+  {
+    "name": "io.eyecu.passhelper.models.UserView",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

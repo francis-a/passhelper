@@ -1,38 +1,36 @@
-import io.eyecu.passhelper.repository.NotificationEndpointRepository
+import io.eyecu.passhelper.models.ExpiringPassportEmailView
+import io.eyecu.passhelper.models.UserView
+import io.eyecu.passhelper.models.countryCodeToCountryName
 import io.eyecu.passhelper.repository.PartitionKey
 import io.eyecu.passhelper.repository.PassportRepository
 import io.eyecu.passhelper.repository.PassportRepository.Passport
 import io.eyecu.passhelper.repository.SortKey
+import io.eyecu.passhelper.service.EmailService
 import io.eyecu.passhelper.service.NotificationService
+import io.eyecu.passhelper.service.UserPoolService
+import io.eyecu.passhelper.util.millisecondsToLocalDate
 import io.eyecu.passhelper.util.toTimestamp
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.isA
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
-import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import software.amazon.awssdk.services.ses.SesClient
-import software.amazon.awssdk.services.ses.model.SendEmailRequest
 import java.time.LocalDate
 
 class NotificationServiceTest {
 
-    private val sesClient = mock<SesClient>()
-    private val notificationEndpointRepository = mock<NotificationEndpointRepository>()
+    private val emailService = mock<EmailService>()
+    private val userPoolService = mock<UserPoolService>()
     private val passportRepository = mock<PassportRepository>()
 
     private val domain = "example.com"
-    private val emailName = "noreply"
     private val notificationService = NotificationService(
-        sesClient,
-        notificationEndpointRepository,
+        emailService,
+        userPoolService,
         passportRepository,
         domain,
-        emailName
+        "no-reply"
     )
 
     @Test
@@ -40,14 +38,46 @@ class NotificationServiceTest {
         val partitionKey = PartitionKey("passport123")
         val sortKey = SortKey("range1")
         val passport = createPassport()
-        val emails = listOf("test1@example.com", "test2@example.com")
+        val emails = createEmails("test1@example.com", "test2@example.com")
 
         whenever(passportRepository.find(partitionKey, sortKey)).thenReturn(passport)
-        whenever(notificationEndpointRepository.findAllEmails()).thenReturn(emails)
+        whenever(userPoolService.listAllUsersWithEmailEnabled()).thenReturn(emails)
 
         notificationService.send(partitionKey, sortKey)
 
-        verify(sesClient, times(2)).sendEmail(isA<SendEmailRequest>())
+        verify(emailService).sendEmail(
+            from = "no-reply@example.com",
+            to = "test1@example.com",
+            template = "emails/reminder",
+            source = "Passport Renewal Reminder",
+            subject = "It's time to renew your passport ${passport.firstName}!",
+            content = mapOf(
+                "expiringPassport" to ExpiringPassportEmailView(
+                    fullName = "${passport.firstName} ${passport.lastName}",
+                    countryName = passport.countryCode.countryCodeToCountryName(),
+                    issuedDate = millisecondsToLocalDate(passport.issued),
+                    expiresDate = millisecondsToLocalDate(passport.expires),
+                    url = "https://$domain"
+                )
+            )
+        )
+
+        verify(emailService).sendEmail(
+            from = "no-reply@example.com",
+            to = "test2@example.com",
+            template = "emails/reminder",
+            source = "Passport Renewal Reminder",
+            subject = "It's time to renew your passport ${passport.firstName}!",
+            content = mapOf(
+                "expiringPassport" to ExpiringPassportEmailView(
+                    fullName = "${passport.firstName} ${passport.lastName}",
+                    countryName = passport.countryCode.countryCodeToCountryName(),
+                    issuedDate = millisecondsToLocalDate(passport.issued),
+                    expiresDate = millisecondsToLocalDate(passport.expires),
+                    url = "https://$domain"
+                )
+            )
+        )
     }
 
     @Test
@@ -59,7 +89,7 @@ class NotificationServiceTest {
 
         notificationService.send(partitionKey, sortKey)
 
-        verify(sesClient, never()).sendEmail(isA<SendEmailRequest>())
+        verify(emailService, never()).sendEmail(any(), any(), any(), any(), any(), any())
     }
 
     @Test
@@ -69,30 +99,21 @@ class NotificationServiceTest {
         val passport = createPassport()
 
         whenever(passportRepository.find(partitionKey, sortKey)).thenReturn(passport)
-        whenever(notificationEndpointRepository.findAllEmails()).thenReturn(emptyList())
+        whenever(userPoolService.listAllUsersWithEmailEnabled()).thenReturn(emptyList())
 
         notificationService.send(partitionKey, sortKey)
 
-        verify(sesClient, never()).sendEmail(isA<SendEmailRequest>())
+        verify(emailService, never()).sendEmail(any(), any(), any(), any(), any(), any())
     }
 
-    @Test
-    fun `should send email with correct request`() {
-        val partitionKey = PartitionKey("passport123")
-        val sortKey = SortKey("range1")
-        val passport = createPassport()
-        val emails = listOf("test@example.com")
-
-        whenever(passportRepository.find(partitionKey, sortKey)).thenReturn(passport)
-        whenever(notificationEndpointRepository.findAllEmails()).thenReturn(emails)
-
-        notificationService.send(partitionKey, sortKey)
-
-        argumentCaptor<SendEmailRequest>().apply {
-            verify(sesClient).sendEmail(capture())
-            assertEquals("test@example.com", firstValue.destination().toAddresses()[0])
-            assertTrue(firstValue.message().subject().data().contains("It's time to renew your passport John!"))
-        }
+    private fun createEmails(vararg addresses: String) = addresses.map {
+        UserView(
+            username = it,
+            emailAddress = it,
+            emailEnabled = true,
+            owner = false,
+            loginEnabled = false
+        )
     }
 
     private fun createPassport(

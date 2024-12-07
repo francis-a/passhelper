@@ -34,22 +34,22 @@
             </div>
         </th:block>
 
-        <!--/*@thymesVar id="notificationEndpointCount" type="java.lang.Integer"*/-->
-        <th:block th:if="${notificationEndpointCount == 0}">
+        <!--/*@thymesVar id="emailAddressCount" type="java.lang.Integer"*/-->
+        <th:block th:if="${emailAddressCount == 0}">
             <div class="p-3 mb-3 bg-light-subtle rounded shadow-sm border">
                 <h2><i class="bi bi-envelope-at-fill me-2"></i>Passport Renewal Reminder Emails</h2>
                 <p>PassHelper will automatically email you when it's time to start the passport renewal process. Add the email address where you'd like to receive these notifications.</p>
-                <a href="/notification-endpoints" class="btn-success btn" role="button">
+                <a href="/users" class="btn-success btn" role="button">
                     <i class="bi bi-envelope-at-fill"></i> Add Email
                 </a>
             </div>
         </th:block>
 
-        <!-- Notification endpoints -->
-        <!--/*@thymesVar id="notificationEndpoints" type="java.lang.String"*/-->
-        <th:block th:if="${notificationEndpointCount != 0}">
+        <!-- Email addresses -->
+        <!--/*@thymesVar id="emailAddresses" type="java.lang.String"*/-->
+        <th:block th:if="${emailAddressCount != 0}">
             <div class="p-3 mb-3 bg-light-subtle rounded shadow-sm border">
-                Reminder notifications will be emailed to: <span th:text="${notificationEndpoints}"></span>
+                Reminder notifications will be emailed to: <span th:text="${emailAddresses}"></span>
             </div>
         </th:block>
 

@@ -3,8 +3,8 @@ package io.eyecu.passhelper.web
 import io.eyecu.passhelper.ApiGatewayServiceProvider
 import io.eyecu.passhelper.service.CalenderService
 import io.eyecu.passhelper.service.CognitoService
-import io.eyecu.passhelper.service.NotificationEndpointService
 import io.eyecu.passhelper.service.PassportService
+import io.eyecu.passhelper.service.UserPoolService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -16,12 +16,12 @@ class RouterTest {
 
     private val cognitoService = mock<CognitoService>()
     private val passportService = mock<PassportService>()
-    private val notificationEndpointService = mock<NotificationEndpointService>()
+    private val userPoolService = mock<UserPoolService>()
     private val calenderService = mock<CalenderService>()
     private val apiGatewayServiceProvider = mock<ApiGatewayServiceProvider> {
         on { cognitoService } doReturn cognitoService
         on { passportService } doReturn passportService
-        on { notificationEndpointService } doReturn notificationEndpointService
+        on { userPoolService } doReturn userPoolService
         on { calenderService } doReturn calenderService
         on { domainName } doReturn "example.com"
     }

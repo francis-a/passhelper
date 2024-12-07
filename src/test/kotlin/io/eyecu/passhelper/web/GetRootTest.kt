@@ -1,7 +1,7 @@
 package io.eyecu.passhelper.web
 
-import io.eyecu.passhelper.service.NotificationEndpointService
 import io.eyecu.passhelper.service.PassportService
+import io.eyecu.passhelper.service.UserPoolService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -42,8 +42,8 @@ class GetRootTest {
 class GetIndexTest {
 
     private val passportService = mock<PassportService>()
-    private val notificationEndpointService = mock<NotificationEndpointService>()
-    private val getIndexRoute = GetIndex(passportService, notificationEndpointService)
+    private val userPoolService = mock<UserPoolService>()
+    private val getIndexRoute = GetIndex(passportService, userPoolService)
 
     @Test
     fun `should route correctly`() {

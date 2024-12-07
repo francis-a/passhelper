@@ -108,6 +108,15 @@ Resources:
   UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
+      Schema:
+        - Name: isOwner
+          AttributeDataType: Boolean
+          Mutable: false
+          Required: false
+        - Name: emailEnabled
+          AttributeDataType: Boolean
+          Mutable: true
+          Required: false
       AccountRecoverySetting:
         RecoveryMechanisms:
           - Name: verified_email
@@ -170,6 +179,12 @@ Resources:
       UserAttributes:
         - Name: email
           Value: !Ref InitialUserEmailAddress
+        - Name: email_verified
+          Value: 'true'
+        - Name: custom:isOwner
+          Value: 'true'
+        - Name: custom:emailEnabled
+          Value: 'false'
 
   HttpApiMapping:
     Type: AWS::ApiGatewayV2::ApiMapping
@@ -303,8 +318,6 @@ Resources:
                   - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${PassportsDynamoDB}"
                   - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${PassportNotificationsDynamoDB}*"
                   - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${PassportNotificationsDynamoDB}"
-                  - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${NotificationEndpointsDynamoDB}*"
-                  - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${NotificationEndpointsDynamoDB}"
         - PolicyName: SQSDlq
           PolicyDocument:
             Version: '2012-10-17'
@@ -334,6 +347,23 @@ Resources:
                 Resource:
                   - !Sub "arn:aws:s3:::${ICSBucket}/*"
                   - !Sub "arn:aws:s3:::${ICSBucket}"
+        - PolicyName: Cognito
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cognito-idp:AdminGetUser
+                  - cognito-idp:ListUsers
+                  - cognito-idp:AdminDisableUser
+                  - cognito-idp:AdminEnableUser
+                  - cognito-idp:AdminUpdateUserAttributes
+                  - cognito-idp:UpdateUserAttributes
+                  - cognito-idp:AdminCreateUser
+                  - cognito-idp:AdminDeleteUser
+                  - cognito-idp:AdminSetUserPassword
+                Resource:
+                  - !GetAtt UserPool.Arn
 
   ApiFunction:
     Type: AWS::Serverless::Function
@@ -352,7 +382,6 @@ Resources:
           REGION: !Sub "${AWS::Region}"
           PASSPORT_TABLE_NAME: !Ref PassportsDynamoDB
           PASSPORT_NOTIFICATIONS_TABLE_NAME: !Ref PassportNotificationsDynamoDB
-          NOTIFICATION_ENDPOINT_TABLE_NAME: !Ref NotificationEndpointsDynamoDB
           COGNITO_CLIENT_ID: !Ref UserPoolClient
           COGNITO_CLIENT_SECRET: !GetAtt UserPoolClient.ClientSecret
           COGNITO_USER_POOL_ID: !Ref UserPool
@@ -394,7 +423,7 @@ Resources:
           EMAIL_DOMAIN: !Ref ApiDomainName
           EMAIL_NAME: !Ref EmailAddress
           PASSPORT_TABLE_NAME: !Ref PassportsDynamoDB
-          NOTIFICATION_ENDPOINT_TABLE_NAME: !Ref NotificationEndpointsDynamoDB
+          COGNITO_USER_POOL_ID: !Ref UserPool
     Metadata:
       BuildMethod: makefile
 
@@ -453,22 +482,6 @@ Resources:
       DestinationConfig:
         OnFailure:
           Destination: !GetAtt DeadLetterQueue.Arn
-
-  NotificationEndpointsDynamoDB:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: !Sub "${AWS::StackName}.notification-endpoints"
-      AttributeDefinitions:
-        - AttributeName: "type"
-          AttributeType: "S"
-        - AttributeName: "value"
-          AttributeType: "S"
-      KeySchema:
-        - AttributeName: "type"
-          KeyType: "HASH"
-        - AttributeName: "value"
-          KeyType: "RANGE"
-      BillingMode: PAY_PER_REQUEST
 
   ICSBucket:
     Type: AWS::S3::Bucket

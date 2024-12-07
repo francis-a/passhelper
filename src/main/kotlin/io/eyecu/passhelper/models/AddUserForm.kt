@@ -1,5 +1,5 @@
 package io.eyecu.passhelper.models
 
-data class AddNotificationEndpointForm(
+data class AddUserForm(
     var email: String? = null
 )
