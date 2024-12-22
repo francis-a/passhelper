@@ -3,7 +3,8 @@ name: Java CI with Gradle
 on: push
 
 jobs:
-  build:
+  build-test:
+    name: Build and test
     runs-on: ubuntu-latest
 
     strategy:
