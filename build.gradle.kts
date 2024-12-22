@@ -51,7 +51,7 @@ dependencies {
     implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
     implementation("com.amazonaws:aws-lambda-java-runtime-interface-client:2.4.2")
 
-    implementation("org.thymeleaf:thymeleaf:3.1.2.RELEASE")
+    implementation("org.thymeleaf:thymeleaf:3.1.3.RELEASE")
 
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
     implementation("org.slf4j:slf4j-simple:2.0.16")
