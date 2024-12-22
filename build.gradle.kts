@@ -1,31 +1,26 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     application
-    id("org.graalvm.buildtools.native") version "0.10.3"
-    kotlin("jvm") version "2.0.21"
+    id("org.graalvm.buildtools.native") version "0.10.4"
+    kotlin("jvm") version "2.1.0"
 }
 
 group = "io.eyecu"
 version = "0-SNAPSHOT"
 
+val javaVersion = JavaLanguageVersion.of(23)
+
 java {
-    sourceCompatibility = JavaVersion.VERSION_22
     toolchain {
-        languageVersion = JavaLanguageVersion.of(22)
+        languageVersion = javaVersion
     }
 }
 
 kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_22)
-        freeCompilerArgs.addAll("-Xjsr305=strict")
+    jvmToolchain {
+        languageVersion = javaVersion
     }
-}
-
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
 
@@ -38,8 +33,8 @@ application {
 }
 
 dependencies {
-    implementation(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.18.1"))
-    implementation(enforcedPlatform("software.amazon.awssdk:bom:2.29.20"))
+    implementation(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.18.2"))
+    implementation(enforcedPlatform("software.amazon.awssdk:bom:2.29.39"))
 
     implementation("com.nimbusds:nimbus-jose-jwt:9.47")
     implementation("com.fasterxml.jackson.core:jackson-databind")
@@ -58,7 +53,7 @@ dependencies {
 
     implementation("org.thymeleaf:thymeleaf:3.1.2.RELEASE")
 
-    implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
     implementation("org.slf4j:slf4j-simple:2.0.16")
     implementation("net.sf.biweekly:biweekly:0.6.8")
 
@@ -77,7 +72,7 @@ dependencies {
 
 }
 
-tasks.withType<Test> {
+tasks.test {
     useJUnitPlatform()
 }
 
