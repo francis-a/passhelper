@@ -36,7 +36,7 @@ dependencies {
     implementation(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.18.2"))
     implementation(enforcedPlatform("software.amazon.awssdk:bom:2.29.39"))
 
-    implementation("com.nimbusds:nimbus-jose-jwt:9.47")
+    implementation("com.nimbusds:nimbus-jose-jwt:9.48")
     implementation("com.fasterxml.jackson.core:jackson-databind")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
@@ -57,13 +57,13 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.16")
     implementation("net.sf.biweekly:biweekly:0.6.8")
 
-    testImplementation(platform("org.junit:junit-bom:5.11.3"))
+    testImplementation(platform("org.junit:junit-bom:5.11.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 
     testImplementation(platform("org.testcontainers:testcontainers-bom:1.20.4"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:localstack")
-    testImplementation("org.assertj:assertj-core:3.26.3")
+    testImplementation("org.assertj:assertj-core:3.27.0")
 
     implementation(platform("org.mockito:mockito-bom:5.14.2"))
     testImplementation("org.mockito:mockito-junit-jupiter")
