@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     application
     id("org.graalvm.buildtools.native") version "0.10.4"
@@ -9,23 +7,20 @@ plugins {
 group = "io.eyecu"
 version = "0-SNAPSHOT"
 
+val javaVersion = JavaLanguageVersion.of(23)
+
 java {
-    sourceCompatibility = JavaVersion.VERSION_22
     toolchain {
-        languageVersion = JavaLanguageVersion.of(22)
+        languageVersion = javaVersion
     }
 }
 
 kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_22)
-        freeCompilerArgs.addAll("-Xjsr305=strict")
+    jvmToolchain {
+        languageVersion = javaVersion
     }
-}
-
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
 
@@ -77,7 +72,7 @@ dependencies {
 
 }
 
-tasks.withType<Test> {
+tasks.test {
     useJUnitPlatform()
 }
 

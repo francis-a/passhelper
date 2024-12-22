@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        java-version: [ 22 ]
+        java-version: [ 23 ]
 
     steps:
       - uses: actions/checkout@v4
