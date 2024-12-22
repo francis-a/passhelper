@@ -1,3 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PassHelper</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" crossorigin="anonymous"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" crossorigin="anonymous"
+          href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css">
+
+    <th:block th:replace="~{fragments/favicon.html}"></th:block>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+
+</head>
+
+
+
+
+
 <!--/*@thymesVar id="passports" type="java.util.List<io.eyecu.passhelper.models.PassportView>"*/-->
 <!--/*@thymesVar id="passport" type="io.eyecu.passhelper.models.PassportView"*/-->
 <th:block th:fragment="passport(title, passports)">
@@ -7,22 +34,30 @@
             <th:block th:each="passport :${passports}">
                 <div class="col col-12 col-lg-6">
                     <div class="card shadow-sm">
-                        <div class="card-header p-0 overflow-hidden">
-                            <div class="row align-items-center">
-                                <div class="col col-10">
-                                    <div class="hstack">
-                                        <span class="float-start fi" th:classappend="'fi-' + ${#strings.toLowerCase(passport.countryCode)}" style="font-size: 2.5rem;"></span>
-                                        <h4 class="ms-2 mb-0" th:text="${passport.fullName}">Full Name</h4>
-                                    </div>
-                                </div>
-                                <div class="col col-2">
-                                    <a class="float-end p-2" th:href="${'edit/' + passport.id}">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
+<!--                        <div class="card-header p-0 overflow-hidden border-0 bg-light-subtle">-->
+<!--                            <div class="row align-items-center">-->
+<!--                                <div class="col col-10">-->
+<!--                                    <div class="hstack">-->
+<!--                                        <span class="float-start fi fi-ca" th:classappend="'fi-' + ${#strings.toLowerCase(passport.countryCode)}" style="font-size: 2.5rem;"></span>-->
+<!--                                        <h4 class="ms-2 mb-0" th:text="${passport.fullName}">Full Name</h4>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="col col-2">-->
+<!--                                    <a class="float-end p-2" th:href="${'edit/' + passport.id}">-->
+<!--                                        <i class="bi bi-pencil-square"></i>-->
+<!--                                    </a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="card-body p-2 bg-light-subtle">
+
+                            <div class="row">
+                                <div class="col">
+                                    <span style="font-size: 5rem; overflow: hidden; border-radius: 50%" class="fi fis fi-ca shadow"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body p-2">
+
+
                             <div class="row align-items-center">
                                 <div class="col-4 text-start">
                                     <p class="text-muted">Country</p>
@@ -47,7 +82,7 @@
                                     <p class="mb-0" th:text="${passport.number}">1234</p>
                                 </div>
                             </div>
-                            <div class="border-bottom mt-1 mb-1"></div>
+                            <div class="mt-1 mb-1"></div>
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="vstack">
@@ -60,17 +95,18 @@
                                     <div class="vstack">
                                         <p class="text-muted mb-0 text-center">Expires</p>
                                         <th:block th:switch="${passport.expiring}">
-                                            <p th:case="'HALF_YEAR'" class="badge bg-danger m-0">
-                                            <p th:case="'YEAR'" class="badge bg-warning m-0">
-                                            <p th:case="'OVER_YEAR'" class="badge bg-success m-0">
+<!--                                            <p th:case="'HALF_YEAR'" class="badge bg-danger m-0">-->
+<!--                                            <p th:case="'YEAR'" class="badge bg-warning m-0">-->
+<!--                                            <p th:case="'OVER_YEAR'" class="badge bg-success m-0">-->
                                         </th:block>
-                                        <span th:text="${#temporals.format(passport.expiresDate, 'MMMM dd, yyyy')}"></span>
+                                        <p th:if="${true == false}" class="badge bg-primary m-0">
+                                        <span th:text="${#temporals.format(passport.expiresDate, 'MMMM dd, yyyy')}">1/1/2020</span>
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer">
+                        <div class="card-footer border-0">
                             <div class="row">
                                 <div class="col-6 text-muted small">
                                     <p class="m-0">Notification Date</p>
