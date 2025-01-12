@@ -32,7 +32,7 @@ Deploying PassHelper
 Application name:               ${NAME}
 Storage bucket:                 ${BUCKET}
 Default account email address:  ${EMAIL}
-Application will be hosted at passports.${DOMAIN}
+Application will be hosted at:  passports.${DOMAIN}
 "
 
 sam build --use-container --parallel --cached -t passhelper.cf.yaml
