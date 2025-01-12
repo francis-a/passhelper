@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 public.ecr.aws/amazonlinux/amazonlinux:2023
+FROM --platform=linux/aarch64 public.ecr.aws/amazonlinux/amazonlinux:2023
 
 RUN yum -y update \
     && yum install -y unzip tar gzip gcc gcc-c++ gcc-gfortran \

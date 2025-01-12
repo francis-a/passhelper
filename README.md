@@ -92,6 +92,25 @@ This tag needs to be used for AWS SAM to build everything as is.
 
 4) Build and deploy the application and CloudFormation stack
 
+###  ⚠️ Note Apple M3 + build issue
+The included `cf-build-deploy.sh` script will use AWS SAM
+to build the native ARM application binary in the included `Dockerfile`.
+Depending on how Docker virtualization is run, this may fail on M3 and M4 Macs.
+```
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGILL (0x4) at pc=0x0000ffff7a7d8ce8, pid=15, tid=16
+#
+# JRE version:  (23.0.1+11) (build )
+# Java VM: OpenJDK 64-Bit Server VM (23.0.1+11-jvmci-b01, mixed mode, sharing, tiered, jvmci, jvmci compiler, compressed oops, compressed class ptrs, g1 gc, linux-aarch64)
+# Problematic frame:
+# j  java.lang.System.registerNatives()V+0 java.base
+```
+Once workaround for this issue is
+to use [Colima](https://github.com/abiosoft/colima)
+to run Docker with the `nestedVirtualization` [option](https://github.com/abiosoft/colima/blob/main/embedded/defaults/colima.yaml#L130) set to `true`.
+For more details see https://github.com/oracle/graal/issues/10458
+
 ```shell
 ./cf-build-deploy.sh -n {Application name e.g. passhelper} -d {Your domain} -u {your SES verified email address} -b {The S3 bucket from step 2}  
 ```
