@@ -82,10 +82,19 @@ graalvmNative {
         named("main") {
             imageName.set("passhelper")
             verbose = false
-            fallback = false
             quickBuild = false
         }
+        named("test") {
+            verbose = true
+            quickBuild = true
+        }
+        all {
+            javaLauncher = javaToolchains.launcherFor {
+                languageVersion = javaVersion
+            }
+        }
     }
+
     metadataRepository {
         enabled = true
     }

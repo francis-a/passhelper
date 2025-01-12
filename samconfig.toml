@@ -1,4 +1,3 @@
 version = 0.1
 [default.build.parameters]
-build_image = ["al2023-graalvm:gradle"]
-use_container = true
+build_image = ["al2023-graalvm:latest"]
