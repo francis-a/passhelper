@@ -77,6 +77,7 @@ tasks.test {
 }
 
 graalvmNative {
+    toolchainDetection = true
     binaries {
         named("main") {
             imageName.set("passhelper")
