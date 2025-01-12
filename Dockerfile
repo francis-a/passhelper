@@ -1,4 +1,4 @@
-FROM --platform=linux/aarch64 public.ecr.aws/amazonlinux/amazonlinux:2023
+FROM --platform=linux/arm64 public.ecr.aws/amazonlinux/amazonlinux:2023
 
 RUN yum -y update \
     && yum install -y unzip tar gzip gcc gcc-c++ gcc-gfortran \
@@ -8,15 +8,15 @@ RUN yum -y update \
     && rm -rf /var/cache/yum
 
 # Graal VM
-ENV GRAAL_VERSION 23.0.1
+ENV GRAAL_VERSION=23.0.1
 RUN curl -4 -L https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-${GRAAL_VERSION}/graalvm-community-jdk-${GRAAL_VERSION}_linux-aarch64_bin.tar.gz | tar -xvz
 RUN mv graalvm-community-openjdk* /usr/lib/graalvm
-ENV JAVA_HOME /usr/lib/graalvm
+ENV JAVA_HOME=/usr/lib/graalvm
 
 # Gradle
-ENV GRADLE_VERSION 8.12
-ENV GRADLE_FOLDERNAME gradle-${GRADLE_VERSION}
-ENV GRADLE_FILENAME gradle-${GRADLE_VERSION}-bin.zip
+ENV GRADLE_VERSION=8.12
+ENV GRADLE_FOLDERNAME=gradle-${GRADLE_VERSION}
+ENV GRADLE_FILENAME=gradle-${GRADLE_VERSION}-bin.zip
 RUN curl -LO https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip
 RUN unzip gradle-${GRADLE_VERSION}-bin.zip
 RUN mv $GRADLE_FOLDERNAME /usr/lib/gradle
