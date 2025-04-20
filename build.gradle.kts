@@ -60,7 +60,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.12.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 
-    testImplementation(platform("org.testcontainers:testcontainers-bom:1.20.5"))
+    testImplementation(platform("org.testcontainers:testcontainers-bom:1.20.6"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:localstack")
     testImplementation("org.assertj:assertj-core:3.27.3")
