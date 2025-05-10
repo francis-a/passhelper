@@ -77,7 +77,7 @@
                                                                             by <span class="fw-700" style="font-weight: 700 !important;"
                                                                                      th:text="${expiringPassport.countryName}">Country</span> is set to
                                                                             expire on <span class="fw-700" style="font-weight: 700 !important;"
-                                                                                            th:text="${#temporals.format(expiringPassport.expiresDate, 'MMMM dd, yyyy')}">Jan, 24, 2024.</span>
+                                                                                            th:text="${#temporals.format(expiringPassport.expiresDate, 'MMMM d, yyyy')}">Jan, 24, 2024.</span>
                                                                         </p>
                                                                     </td>
                                                                     </td>
@@ -103,12 +103,12 @@
                                                                     </td>
                                                                     <td style="line-height: 24px; font-size: 16px; border-top-width: 1px; border-top-color: #e2e8f0; border-top-style: solid; margin: 0; padding: 12px;"
                                                                         align="left" valign="top"
-                                                                        th:text="${#temporals.format(expiringPassport.issuedDate, 'MMMM dd, yyyy')}">January
+                                                                        th:text="${#temporals.format(expiringPassport.issuedDate, 'MMMM d, yyyy')}">January
                                                                         25, 2024
                                                                     </td>
                                                                     <td style="line-height: 24px; font-size: 16px; border-top-width: 1px; border-top-color: #e2e8f0; border-top-style: solid; margin: 0; padding: 12px;"
                                                                         align="left" valign="top"
-                                                                        th:text="${#temporals.format(expiringPassport.expiresDate, 'MMMM dd, yyyy')}">
+                                                                        th:text="${#temporals.format(expiringPassport.expiresDate, 'MMMM d, yyyy')}">
                                                                         January 25, 2024
                                                                     </td>
                                                                 </tr>
@@ -121,7 +121,7 @@
                                     <p style="line-height: 24px; font-size: 16px; width: 100%; margin-top: 12px;" align="center">➡️ See your passport overview at <a style="color: #2d3748;" th:href="${expiringPassport.url}"><th:block th:text="${expiringPassport.url}"></th:block></a></p>
 
                                                 <div class="preview" style="display: none; max-height: 0px; overflow: hidden;">
-                                                    The passport issued to <th:block th:text="${expiringPassport.fullName}">F A</th:block> by <th:block th:text="${expiringPassport.countryName}">Country</th:block> is set to expire on <th:block th:text="${#temporals.format(expiringPassport.expiresDate, 'MMMM dd, yyyy')}">1/23/45</th:block>&#847;
+                                                    The passport issued to <th:block th:text="${expiringPassport.fullName}">F A</th:block> by <th:block th:text="${expiringPassport.countryName}">Country</th:block> is set to expire on <th:block th:text="${#temporals.format(expiringPassport.expiresDate, 'MMMM d, yyyy')}">1/23/45</th:block>&#847;
                                                     &#8204; &#160; &#847; &#8204; &#160; &#847; &#8204; &#160; &#847; &#8204; &#160; &#847; &#8204; &#160; &#847;
                                                     &#8204; &#160; &#847; &#8204; &#160; &#847; &#8204; &#160; &#847; &#8204; &#160; &#847; &#8204; &#160; &#847;
                                                     &#8204; &#160; &#847; &#8204; &#160; &#847; &#8204; &#160; &#847; &#8204; &#160; &#847; &#8204; &#160; &#847;
