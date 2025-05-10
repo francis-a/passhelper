@@ -505,10 +505,10 @@ Resources:
 ## Note: After the initial deployment is complete, you can uncomment this stack and rerun
 ## Note: the deployment.
 ## Note:
-#  CognitoCustomizations:
-#    Type: AWS::CloudFormation::Stack
-#    Properties:
-#      Parameters:
-#        UserPoolId: !Ref UserPool
-#        UserPoolArn: !GetAtt UserPool.Arn
-#      TemplateURL: ./passhelper.cognito.customization.cf.yaml
+  CognitoCustomizations:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        UserPoolId: !Ref UserPool
+        UserPoolArn: !GetAtt UserPool.Arn
+      TemplateURL: ./passhelper.cognito.customization.cf.yaml

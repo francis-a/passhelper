@@ -1,23 +1,25 @@
 plugins {
     application
     id("org.graalvm.buildtools.native") version "0.10.6"
-    kotlin("jvm") version "2.1.20"
+    kotlin("jvm") version "2.2.0-Beta2"
 }
 
 group = "io.eyecu"
 version = "0-SNAPSHOT"
 
-val javaVersion = JavaLanguageVersion.of(23)
+val javaVersion = JavaLanguageVersion.of(24)
 
 java {
     toolchain {
         languageVersion = javaVersion
+        nativeImageCapable = true
     }
 }
 
 kotlin {
     jvmToolchain {
         languageVersion = javaVersion
+        nativeImageCapable = true
     }
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")

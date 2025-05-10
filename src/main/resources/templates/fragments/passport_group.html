@@ -36,7 +36,7 @@
                                     <p class="text-muted">Date of Birth</p>
                                 </div>
                                 <div class="col-8 text-end">
-                                    <p th:text="${#temporals.format(passport.dob, 'MMMM dd, yyyy')}">1/2/3</p>
+                                    <p th:text="${#temporals.format(passport.dob, 'MMMM d, yyyy')}">1/2/3</p>
                                 </div>
                             </div>
                             <div class="row align-items-center">
@@ -52,7 +52,7 @@
                                 <div class="col-sm-6">
                                     <div class="vstack">
                                         <p class="text-muted mb-0 text-center">Issued</p>
-                                        <p class="badge bg-secondary m-0" th:text="${#temporals.format(passport.issuedDate, 'MMMM dd, yyyy')}">
+                                        <p class="badge bg-secondary m-0" th:text="${#temporals.format(passport.issuedDate, 'MMMM d, yyyy')}">
                                             1/23/45</p>
                                     </div>
                                 </div>
@@ -64,7 +64,7 @@
                                             <p th:case="'YEAR'" class="badge bg-warning m-0">
                                             <p th:case="'OVER_YEAR'" class="badge bg-success m-0">
                                         </th:block>
-                                        <span th:text="${#temporals.format(passport.expiresDate, 'MMMM dd, yyyy')}"></span>
+                                        <span th:text="${#temporals.format(passport.expiresDate, 'MMMM d, yyyy')}"></span>
                                         </p>
                                     </div>
                                 </div>
@@ -78,7 +78,7 @@
                                 <div class="col-6 text-muted small">
                                     <div class="hstack float-end">
                                         <span th:if="${passport.notificationDate != null}"
-                                              th:text="${#temporals.format(passport.notificationDate, 'MMMM dd, yyyy')}"></span>
+                                              th:text="${#temporals.format(passport.notificationDate, 'MMMM d, yyyy')}"></span>
                                         <span class="fw-bolder" th:if="${passport.notificationDate == null}">-</span>
                                     </div>
                                 </div>
