@@ -1,7 +1,7 @@
 plugins {
     application
     id("org.graalvm.buildtools.native") version "0.10.6"
-    kotlin("jvm") version "2.2.0-Beta2"
+    kotlin("jvm") version "2.2.0-RC"
 }
 
 group = "io.eyecu"
