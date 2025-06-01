@@ -35,15 +35,14 @@ application {
 }
 
 dependencies {
-    implementation(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.19.0"))
-    implementation(enforcedPlatform("software.amazon.awssdk:bom:2.31.50"))
+    implementation(platform("com.fasterxml.jackson:jackson-bom:2.19.0"))
+    implementation(platform("software.amazon.awssdk:bom:2.31.50"))
 
     implementation("com.nimbusds:nimbus-jose-jwt:10.3")
     implementation("com.fasterxml.jackson.core:jackson-databind")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
-    implementation("software.amazon.awssdk:dynamodb")
     implementation("software.amazon.awssdk:dynamodb-enhanced")
     implementation("software.amazon.awssdk:ses")
     implementation("software.amazon.awssdk:cognitoidentityprovider")
@@ -67,7 +66,7 @@ dependencies {
     testImplementation("org.testcontainers:localstack")
     testImplementation("org.assertj:assertj-core:3.27.3")
 
-    implementation(platform("org.mockito:mockito-bom:5.17.0"))
+    testImplementation(platform("org.mockito:mockito-bom:5.17.0"))
     testImplementation("org.mockito:mockito-junit-jupiter")
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
