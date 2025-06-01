@@ -35,7 +35,7 @@ application {
 }
 
 dependencies {
-    implementation(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.18.3"))
+    implementation(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.19.0"))
     implementation(enforcedPlatform("software.amazon.awssdk:bom:2.31.50"))
 
     implementation("com.nimbusds:nimbus-jose-jwt:10.2")
