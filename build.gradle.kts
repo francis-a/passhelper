@@ -38,7 +38,7 @@ dependencies {
     implementation(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.19.0"))
     implementation(enforcedPlatform("software.amazon.awssdk:bom:2.31.50"))
 
-    implementation("com.nimbusds:nimbus-jose-jwt:10.2")
+    implementation("com.nimbusds:nimbus-jose-jwt:10.3")
     implementation("com.fasterxml.jackson.core:jackson-databind")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
