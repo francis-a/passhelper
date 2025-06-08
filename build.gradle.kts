@@ -49,7 +49,7 @@ dependencies {
     implementation("software.amazon.awssdk:s3")
 
     implementation("com.amazonaws:aws-lambda-java-events:3.15.0")
-    implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
+    implementation("com.amazonaws:aws-lambda-java-core:1.3.0")
     implementation("com.amazonaws:aws-lambda-java-runtime-interface-client:2.4.2")
 
     implementation("org.thymeleaf:thymeleaf:3.1.3.RELEASE")
