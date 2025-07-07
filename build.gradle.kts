@@ -36,7 +36,7 @@ application {
 
 dependencies {
     implementation(platform("com.fasterxml.jackson:jackson-bom:2.19.0"))
-    implementation(platform("software.amazon.awssdk:bom:2.31.54"))
+    implementation(platform("software.amazon.awssdk:bom:2.31.77"))
 
     implementation("com.nimbusds:nimbus-jose-jwt:10.3")
     implementation("com.fasterxml.jackson.core:jackson-databind")
